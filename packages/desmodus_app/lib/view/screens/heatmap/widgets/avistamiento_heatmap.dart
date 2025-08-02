@@ -31,92 +31,86 @@ class AvistamientoHeatmap extends StatelessWidget {
     );
 
     return Obx(
-      () =>
-          !locationController.hasPermission.value
-              ? DeniedLocationPermissionWidget()
-              // : avistController.isLoading.value
-              // ? const Center(child: CircularProgressIndicator())
-              : FlutterMap(
-                key: locationController.mapKey,
-                mapController: locationController.mapController,
-                options: MapOptions(
-                  initialZoom: 12.5,
-                  minZoom: 5,
-                  initialCenter: LatLng(
-                    locationController.latitud.value,
-                    locationController.longitud.value,
-                  ),
+      () => !locationController.hasPermission.value
+          ? DeniedLocationPermissionWidget()
+          // : avistController.isLoading.value
+          // ? const Center(child: CircularProgressIndicator())
+          : FlutterMap(
+              key: locationController.mapKey,
+              mapController: locationController.mapController,
+              options: MapOptions(
+                initialZoom: 12.5,
+                minZoom: 5,
+                initialCenter: LatLng(
+                  locationController.latitud.value,
+                  locationController.longitud.value,
                 ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        "https://tile.jawg.io/jawg-terrain/{z}/{x}/{y}.png?access-token=${Config.jawgAccessToken}",
-                    // urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    userAgentPackageName:
-                        "github.jesufrancesco.lissachatina_app",
-                  ),
-                  Obx(() {
-                    if (avistController.allAvistamientos.isEmpty) {
-                      return const SizedBox();
-                    }
-                    final avistamientoData = InMemoryHeatMapDataSource(
-                      data:
-                          avistController.allAvistamientos
-                              .map(
-                                (e) => WeightedLatLng(
-                                  LatLng(e.latitud, e.longitud),
-                                  5e1, // 50 avistamientos de peso
-                                ),
-                              )
-                              .toList(),
-                    );
-                    return HeatMapLayer(
-                      heatMapOptions: HeatMapOptions(
-                        radius: 1e2, // 100 metros
-                      ),
-                      heatMapDataSource: avistamientoData,
-                    );
-                  }),
-                  Obx(() {
-                    final lat = locationController.latitud.value;
-                    final lng = locationController.longitud.value;
-                    final allAvist = avistController.allAvistamientos;
-                    return MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: LatLng(lat, lng),
-                          child: GestureDetector(
-                            onTap: showUserSnackbar,
-                            child: const Icon(
-                              Icons.location_pin,
-                              size: 32,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        ...allAvist.map(
-                          (e) => Marker(
-                            point: LatLng(e.latitud, e.longitud),
-                            child: GestureDetector(
-                              onTap:
-                                  () => Get.snackbar(
-                                    "Avistamiento onTap",
-                                    "Okay",
-                                  ),
-                              child: Icon(
-                                Icons.warning,
-                                size: 20,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                  ...additionalStackWidgets,
-                ],
               ),
+              children: [
+                TileLayer(
+                  urlTemplate:
+                      "https://tile.jawg.io/jawg-terrain/{z}/{x}/{y}.png?access-token=${Config.jawgAccessToken}",
+                  // urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  userAgentPackageName: "github.jesufrancesco.desmodus_app",
+                ),
+                Obx(() {
+                  if (avistController.allAvistamientos.isEmpty) {
+                    return const SizedBox();
+                  }
+                  final avistamientoData = InMemoryHeatMapDataSource(
+                    data: avistController.allAvistamientos
+                        .map(
+                          (e) => WeightedLatLng(
+                            LatLng(e.latitud, e.longitud),
+                            5e1, // 50 avistamientos de peso
+                          ),
+                        )
+                        .toList(),
+                  );
+                  return HeatMapLayer(
+                    heatMapOptions: HeatMapOptions(
+                      radius: 1e2, // 100 metros
+                    ),
+                    heatMapDataSource: avistamientoData,
+                  );
+                }),
+                Obx(() {
+                  final lat = locationController.latitud.value;
+                  final lng = locationController.longitud.value;
+                  final allAvist = avistController.allAvistamientos;
+                  return MarkerLayer(
+                    markers: [
+                      Marker(
+                        point: LatLng(lat, lng),
+                        child: GestureDetector(
+                          onTap: showUserSnackbar,
+                          child: const Icon(
+                            Icons.location_pin,
+                            size: 32,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      ...allAvist.map(
+                        (e) => Marker(
+                          point: LatLng(e.latitud, e.longitud),
+                          child: GestureDetector(
+                            onTap: () =>
+                                Get.snackbar("Avistamiento onTap", "Okay"),
+                            child: Icon(
+                              Icons.warning,
+                              size: 20,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+                ...additionalStackWidgets,
+              ],
+            ),
     );
   }
 }
