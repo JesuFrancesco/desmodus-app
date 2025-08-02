@@ -1,7 +1,0 @@
-fastapi
-huggingface_hub
-pydantic
-python-dotenv
-pydantic_settings
-uvicorn; sys_platform != 'win32'
-uvicorn[standard]; sys_platform != 'win32'
