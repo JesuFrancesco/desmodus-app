@@ -5,9 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from database import create_db_tables  # , delete_db_tables
 from data.seed import seed_data
 from controllers import (
-    avist_archivo,
     archivos,
-    avist,
     departamento,
     distrito,
     noticias,
@@ -37,13 +35,11 @@ app.mount("/static", StaticFiles(directory="./images"), name="images")
 app.include_router(uploads.router)
 
 app.include_router(users.router, prefix="/users")
-app.include_router(avist.router, prefix="/avist")
 app.include_router(archivos.router, prefix="/archivos")
 app.include_router(noticias.router, prefix="/noticias")
 app.include_router(departamento.router, prefix="/departamento")
 app.include_router(provincia.router, prefix="/provincia")
 app.include_router(distrito.router, prefix="/distrito")
-app.include_router(avist_archivo.router, prefix="/avist_archivo")
 
 app.include_router(google.router, prefix="/google-auth")
 app.include_router(discord.router, prefix="/discord-auth")

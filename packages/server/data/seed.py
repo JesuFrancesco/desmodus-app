@@ -5,13 +5,13 @@ from decimal import Decimal
 from database import engine
 from faker import Faker
 
-from models.avist import Avist
+from models.avistamiento import Avistamiento
 from models.users import Users
 
 
 def __load_ubigeos_sql():
     ubigeos_path = os.path.join(os.path.dirname(__file__), "sql", "ubigeos.sql")
-    with open(ubigeos_path, "r", encoding='utf-8') as file:
+    with open(ubigeos_path, "r", encoding="utf-8") as file:
         sql = file.read()
 
     with Session(engine) as session:
@@ -59,11 +59,11 @@ def __mock_avistamientos():
 
         assert faker_user.id == 100
 
-        statement = delete(Avist)
+        statement = delete(Avistamiento)
         session.exec(statement)  # type: ignore
 
-        for i in range(1, 50 + 1):
-            fake_avist = Avist(
+        for _ in range(1, 50 + 1):
+            fake_avist = Avistamiento(
                 latitud=Decimal(random.uniform(-18.0, -0.04)),
                 longitud=Decimal(random.uniform(-81.35, -68.65)),
                 description=faker.text(max_nb_chars=200),
