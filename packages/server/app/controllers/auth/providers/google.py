@@ -121,7 +121,12 @@ async def flutter_callback(
 
     if not existing_user:
         new_user = Users(
-            name=user["name"], email=user["email"], phone="", dni="", distrito_id=None
+            name=user["name"],
+            email=user["email"],
+            avatar_url=user["picture"],
+            phone="",
+            dni="",
+            distrito_id=None,
         )
         session.add(new_user)
         session.commit()

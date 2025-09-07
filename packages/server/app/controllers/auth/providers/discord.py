@@ -91,6 +91,7 @@ async def auth_callback(
         new_user = Users(
             name=user_info["username"],
             email=user_info["email"],
+            avatar_url=user_info.get("avatar", ""),
             phone="",
             dni="",
             distrito_id=None,

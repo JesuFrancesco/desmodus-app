@@ -31,6 +31,7 @@ async def get_current_user(
             "id": user.id,
             "name": user.name,
             "email": user.email,
+            "avatar_url": user.avatar_url,
             "telefono": user.phone,
             "dni": user.dni,
             "distrito_id": user.distrito_id,
