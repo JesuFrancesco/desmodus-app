@@ -132,6 +132,13 @@ async def flutter_callback(
         session.commit()
         session.refresh(new_user)
         existing_user = new_user
+    else:
+        existing_user.name = user["name"]
+        existing_user.email = user["email"]
+        existing_user.avatar_url = user["picture"]
+        session.add(existing_user)
+        session.commit()
+        session.refresh(existing_user)
 
     jWebToken = write_token(
         {"id": existing_user.id, "sub": user["email"], "role": "user"}

@@ -100,6 +100,13 @@ async def auth_callback(
         session.commit()
         session.refresh(new_user)
         existing_user = new_user
+    else:
+        existing_user.name = user_info["username"]
+        existing_user.email = user_info["email"]
+        existing_user.avatar_url = user_info.get("avatar", "")
+        session.add(existing_user)
+        session.commit()
+        session.refresh(existing_user)
 
     jWebToken = write_token(
         {
