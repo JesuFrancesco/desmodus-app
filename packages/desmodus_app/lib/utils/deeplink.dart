@@ -12,7 +12,7 @@ class DeepLinkParser {
 
   final _appLinks = AppLinks();
 
-  Future<Uri?> getInitialLink() => _appLinks.getInitialAppLink();
+  Future<Uri?> getInitialLink() => _appLinks.getInitialLink();
 
   Future<Map<String, dynamic>> _getUserPayload(String jwt) =>
       AuthService().getUserPayload(jwt);

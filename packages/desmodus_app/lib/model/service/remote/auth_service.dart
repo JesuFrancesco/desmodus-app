@@ -34,23 +34,22 @@ class AuthService {
   }
 
   Future<String> googleSignIn() async {
-    final webClientId = Config.googleWebClientId;
-    final androidClientId = Config.googleAndroidClientId;
-
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      serverClientId: webClientId,
-      clientId: androidClientId,
+    await GoogleSignIn.instance.initialize(
+      clientId: Config.googleAndroidClientId,
+      serverClientId: Config.googleWebClientId,
     );
 
-    final googleUser = await googleSignIn.signIn();
-    assert(googleUser != null, "No se ha encontrado el usuario de Google");
+    final googleUser = await GoogleSignIn.instance.authenticate();
 
-    final googleAuth = await googleUser?.authentication;
+    final gAuthorization = await googleUser.authorizationClient
+        .authorizationForScopes(['email', 'profile']);
 
-    final gAccessToken = googleAuth?.accessToken;
-    assert(gAccessToken != null, "No se ha encontrado el token de acceso");
+    assert(gAuthorization != null);
 
-    final jwt = await flutterGoogleCallback(gAccessToken!);
+    final gAccessToken = gAuthorization!.accessToken;
+
+    final jwt = await AuthService().flutterGoogleCallback(gAccessToken);
+
     return jwt;
   }
 
