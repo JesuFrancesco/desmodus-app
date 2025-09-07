@@ -1,0 +1,175 @@
+name: Commit Stage de Desmodus App
+run-name: Commit Stage de Desmodus App - ${{ github.ref }}
+
+on:
+  workflow_call:
+    secrets:
+      KEYSTORE_BASE64:
+        required: true
+      KEYSTORE_PASSWORD:
+        required: true
+      KEY_PASSWORD:
+        required: true
+      KEY_ALIAS:
+        required: true
+
+      API_URL:
+        required: true
+      GOOGLE_WEB_CLIENT_ID:
+        required: true
+      GOOGLE_ANDROID_CLIENT_ID:
+        required: true
+      JAWG_MAPS_ACCESS_TOKEN:
+        required: true
+      DISCORD_OAUTH_URL:
+        required: true
+
+jobs:
+  # ====================================================
+  # Android build job
+  # ====================================================
+  android-build:
+    name: Build Android Artifacts
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages
+
+    env:
+      VERSION: "undefined"
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extraer version del pubspec.yaml
+        run: |
+          cd desmodus_app
+          version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
+          echo "VERSION=$version" >> $GITHUB_ENV
+          echo "$version" > ../../version.txt
+
+      - name: Instalar Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Instalar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Configurar keystore
+        run: |
+          cd desmodus_app
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/desmodus.jks
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=desmodus.jks" >> android/key.properties
+
+      - name: Crear .env
+        run: |
+          cd desmodus_app
+          echo "AMBIENTE=prod" > .env
+          echo "API_URL=${{ secrets.API_URL }}" >> .env
+          echo "GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}" >> .env
+          echo "GOOGLE_ANDROID_CLIENT_ID=${{ secrets.GOOGLE_ANDROID_CLIENT_ID }}" >> .env
+          echo "DISCORD_OAUTH_URL=${{ secrets.DISCORD_OAUTH_URL }}" >> .env
+          echo "JAWG_MAPS_ACCESS_TOKEN=${{ secrets.JAWG_MAPS_ACCESS_TOKEN }}" >> .env
+
+      - name: Obtener dependencias
+        run: |
+          cd desmodus_app
+          flutter pub get
+
+      - name: Build APK
+        run: |
+          cd desmodus_app
+          flutter build apk --release --split-per-abi --dart-define-from-file=.env
+
+      - name: Build AAB
+        run: |
+          cd desmodus_app
+          flutter build appbundle --dart-define-from-file=.env
+
+      - name: Prepare artifacts
+        run: |
+          cd desmodus_app
+          mkdir ../../dist
+          mv build/app/outputs/flutter-apk/* ../../dist
+          mv build/app/outputs/bundle/* ../../dist
+
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desmodus-android
+          path: |
+            dist/**
+            CHANGELOG.md
+            version.txt
+
+  # ====================================================
+  # Server build job
+  # ====================================================
+  server-build:
+    name: Build FastAPI Server
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages
+
+    services:
+      db:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: desmodus_dev
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Install dependencies
+        run: |
+          cd server
+          python -m pip install --upgrade pip
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        env:
+          AMBIENTE: pytest
+        run: |
+          cd server
+          ./correr_tests.sh
+
+      - name: Upload server artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: desmodus-server
+          path: |
+            packages/server/**
+            !packages/server/.venv/
+            !packages/server/.venv/**
+            !packages/server/__pycache__/**
+            !packages/server/.pytest_cache/**
+            !packages/server/.mypy_cache/**
+            !packages/server/.git/**

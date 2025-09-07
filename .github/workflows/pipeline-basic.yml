@@ -1,0 +1,17 @@
+name: Pipeline CI/CD para Desmodus App
+run-name: Pipeline CI/CD para desmodus - ejecutado por ${{ github.actor }} en rama ${{ github.ref_name }}
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  commit-stage:
+    uses: ./.github/workflows/workflow-commit-stage.yml
+    secrets: inherit
+
+  continuous-integration:
+    needs: commit-stage
+    uses: ./.github/workflows/workflow-continuous-deployment.yml
+    secrets: inherit

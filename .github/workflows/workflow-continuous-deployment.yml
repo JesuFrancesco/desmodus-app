@@ -1,0 +1,129 @@
+name: Despliegue continuo para Desmodus
+run-name: Despliegue continuo para Desmodus - ${{ github.ref }}
+
+on:
+  workflow_call:
+    secrets:
+      # Database secrets
+      DATABASE_ENGINE:
+        required: true
+      DATABASE_USER:
+        required: true
+      DATABASE_PASSWORD:
+        required: true
+      DATABASE_URL:
+        required: true
+      DATABASE_PORT:
+        required: true
+      DATABASE_NAME:
+        required: true
+
+      # Github secrets
+      PERSONAL_GITHUB_TOKEN:
+        required: true
+
+      # Azure secrets
+      AZURE_WEBAPP_PUBLISH_PROFILE:
+        required: true
+
+env:
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+  AZURE_WEBAPP_NAME: desmodus-app
+
+jobs:
+  continuous-deployment:
+    name: Despliegue Continuo
+    runs-on: ubuntu-latest
+
+    env:
+      TAG_EXISTS: "false"
+      VERSION: "undefined"
+
+    steps:
+      # 1. Bajar artefactos de release
+      - name: Descargar artefactos Android
+        uses: actions/download-artifact@v4
+        with:
+          name: desmodus-android
+          path: android-artifacts/
+
+      - name: Descargar artefactos Server
+        uses: actions/download-artifact@v4
+        with:
+          name: desmodus-server
+          path: server-artifacts/
+
+      - run: echo "# Resumen de Despliegue Continuo 🚀🔥" > $GITHUB_STEP_SUMMARY
+
+      # 2. Ejecutar migraciones de producción
+      - name: Ejecutar migraciones
+        env:
+          DATABASE_ENGINE: ${{ secrets.DATABASE_ENGINE }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+        run: |
+          cd server-artifacts
+
+          echo "## Ejecutando migraciones de base de datos 🛩️" >> $GITHUB_STEP_SUMMARY
+
+          pip install -U pip
+          pip install setuptools
+          pip install -r requirements.txt
+
+          alembic upgrade head >> $GITHUB_STEP_SUMMARY
+
+          echo "- Migraciones completadas" >> $GITHUB_STEP_SUMMARY
+
+      # 4.5. Preparación de release gold
+      - name: Preparación de release gold
+        run: |
+          echo "## Comprimir contenido de server y creando release ⚡" >> $GITHUB_STEP_SUMMARY
+
+          # Empaquetar server
+          cd server-artifacts
+          zip -r ../server.zip . -x ".venv/*" "__pycache__/*" "tests/*" ".git/*" ".gitignore"
+          cd ..
+
+          # Detectar CHANGELOG y version
+          if [ -f android-artifacts/CHANGELOG.md ]; then
+            cp android-artifacts/CHANGELOG.md ./CHANGELOG.md
+          fi
+
+          if [ -f android-artifacts/version.txt ]; then
+            VERSION=$(cat android-artifacts/version.txt)
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+          fi
+
+          echo "- Versión del release: $VERSION" >> $GITHUB_STEP_SUMMARY
+
+          # Preparar dist/
+          mkdir -p dist
+          cp -r android-artifacts/dist/* dist/ || true
+          cp server.zip dist/ || true
+
+          echo "== Contenido de dist ==" >> $GITHUB_STEP_SUMMARY
+          ls -R dist >> $GITHUB_STEP_SUMMARY
+
+      - run: echo "- Desplegando server en Azure WebApp 🌐" >> $GITHUB_STEP_SUMMARY
+      - name: Despliegue de WebApp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: server.zip
+          # startup-command: "python -m uvicorn --host 0.0.0.0 --port 8080 app.main:app"
+
+      # 5: Entregar artefactos gold
+      - name: Crear Release gold
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: >-
+            dist/*
+          tag: ${{ env.VERSION }}-gold
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bodyFile: CHANGELOG.md
+          makeLatest: true

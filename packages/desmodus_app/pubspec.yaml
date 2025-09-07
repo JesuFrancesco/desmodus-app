@@ -3,7 +3,7 @@ description: "Cliente móvil para el curso de Arquitectura de Software."
 
 publish_to: "none"
 
-version: 1.0.0+1
+version: 1.0.0
 
 environment:
   sdk: ^3.7.2
