@@ -59,7 +59,7 @@ class AuthController extends GetxController {
         storeCookie("access_token", newAccessToken);
         await actualizarInfoUsuario(newToken: newAccessToken);
         print("Autorización exitosa: $newAccessToken");
-        // Get.offAndToNamed("/dashboard");
+        // Get.offAndToNamed("/home");
       }
     } catch (e) {
       print(e);

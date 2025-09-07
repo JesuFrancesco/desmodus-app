@@ -38,9 +38,9 @@ class DeepLinkParser {
       _getUserPayload(jwt)
           .then((user) {
             print("Autorización exitosa: $jwt");
-            // Get.offAndToNamed("/dashboard", arguments: payload);
+            // Get.offAndToNamed("/home", arguments: payload);
             if (isUserDataComplete(user)) {
-              Get.offAndToNamed("/dashboard");
+              Get.offAndToNamed("/home");
             } else {
               Get.offAndToNamed("/cuestionario");
             }

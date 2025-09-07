@@ -300,7 +300,7 @@ class _UltralyticsYoloCameraPreviewState
               onPressed: () {
                 Navigator.of(
                   context,
-                ).popUntil(ModalRoute.withName("/dashboard"));
+                ).popUntil(ModalRoute.withName("/home"));
               },
               child: Text(
                 "Cerrar",

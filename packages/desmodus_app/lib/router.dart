@@ -2,8 +2,9 @@ import 'package:desmodus_app/view/screens/home/home_screen.dart';
 import 'package:desmodus_app/view/screens/detector/detector_screen.dart';
 import 'package:desmodus_app/view/screens/heatmap/heatmap_screen.dart';
 import 'package:desmodus_app/view/screens/news_detail/news_detail_screen.dart';
+import 'package:desmodus_app/viewmodel/bindings/camera_bindings.dart';
+import 'package:desmodus_app/viewmodel/bindings/home_bindings.dart';
 import 'package:desmodus_app/viewmodel/bindings/initial_bindings.dart';
-import 'package:desmodus_app/viewmodel/controllers/home_controller.dart';
 import 'package:get/get.dart';
 import 'package:desmodus_app/view/screens/login/login_screen.dart';
 import 'package:desmodus_app/view/screens/login/no-auth-cta/no_auth_cta_screen.dart';
@@ -33,9 +34,7 @@ GetMaterialApp getAppRouter(String firstScreen) {
       GetPage(
         name: '/home',
         page: () => const HomeScreen(),
-        binding: BindingsBuilder(() {
-          Get.lazyPut(() => HomeController());
-        }),
+        binding: HomeBindings(),
       ),
       GetPage(
         name: '/news-detail',
@@ -47,6 +46,7 @@ GetMaterialApp getAppRouter(String firstScreen) {
       GetPage(
         name: '/detector',
         page: () => const DetectorScreen(),
+        binding: CameraBindings(),
         // bindings: [],
       ),
       GetPage(
