@@ -1,7 +1,6 @@
 import 'package:desmodus_app/view/screens/login/widget/facebook_sign_in.dart';
 import 'package:desmodus_app/view/screens/login/widget/map_redirect.dart';
 import 'package:flutter/material.dart';
-import 'package:desmodus_app/utils/padding_extensions.dart';
 import 'package:desmodus_app/view/screens/login/widget/app_logo.dart';
 import 'package:desmodus_app/view/screens/login/widget/discord_sign_in.dart';
 import 'package:desmodus_app/view/screens/login/widget/google_sign_in.dart';
@@ -43,7 +42,10 @@ class _LoginScreenState extends State<LoginScreen> {
             DiscordSignInButton(),
             FacebookSignInButton(),
             // DIVIDER
-            ShortDivider(),
+            Divider(
+              thickness: 2,
+              color: Colors.grey[300],
+            ).paddingSymmetric(horizontal: 32, vertical: 16),
             // NO AUTH ACCESS BUTTON
             NoAuthAccessButton(),
             MapButton(),
@@ -51,33 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class ShortDivider extends StatelessWidget {
-  const ShortDivider({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final divider = Divider(
-      height: 50,
-      indent: 50,
-      thickness: 2,
-      color:
-          Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : Colors.black,
-    );
-
-    return Row(
-      children: [
-        Expanded(child: divider),
-        10.ph,
-        Text('O', style: Theme.of(context).textTheme.titleSmall),
-        10.ph,
-        divider,
-      ],
     );
   }
 }

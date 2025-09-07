@@ -27,7 +27,7 @@ class AuthController extends GetxController {
 
       if (usuarioCompleto.value || _isUserDataComplete(user)) {
         usuarioCompleto.value = true;
-        Get.offAndToNamed("/dashboard");
+        Get.offAndToNamed("/home");
       } else {
         Get.offAndToNamed("/cuestionario");
       }
@@ -83,5 +83,9 @@ class AuthController extends GetxController {
   Future<void> cerrarSesion() async {
     deleteCookie("access_token");
     Get.offAndToNamed("/login");
+  }
+
+  void logout() {
+    cerrarSesion();
   }
 }

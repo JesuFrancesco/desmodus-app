@@ -1,4 +1,4 @@
-import 'package:desmodus_app/view/ui/theme/colors.dart';
+import 'package:desmodus_app/utils/padding_extensions.dart';
 import 'package:desmodus_app/view/ui/theme/fonts.dart';
 import 'package:desmodus_app/viewmodel/auth_controller.dart'
     show AuthController;
@@ -18,10 +18,6 @@ class HomeScreen extends GetView<HomeController> {
     return Stack(
       children: [
         Scaffold(
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.chat_bubble_outline, size: 28),
-            onPressed: () => Get.toNamed("chatbot"),
-          ),
           appBar: AppBar(
             elevation: 0,
             centerTitle: true,
@@ -44,14 +40,12 @@ class HomeScreen extends GetView<HomeController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Hola ${authController.userPayload["name"]}!",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppFonts.primaryFont,
+                      Center(
+                        child: UserGreetingsWidget(
+                          authController: authController,
                         ),
                       ),
+
                       const Text(
                         'Últimas noticias',
                         style: TextStyle(
@@ -120,84 +114,95 @@ class HomeScreen extends GetView<HomeController> {
                     ],
                   ),
                 ),
+
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: TextButton(
+                      style: Theme.of(context).textButtonTheme.style?.copyWith(
+                        foregroundColor: WidgetStateProperty.all(Colors.red),
+                        backgroundColor: WidgetStateProperty.all(
+                          Colors.red.shade50,
+                        ),
+                      ),
+                      onPressed: () => authController.logout(),
+                      child: Text("Cerrar sesión"),
+                    ),
+                  ),
+                ),
               ],
             ),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                heroTag: "camera",
+                onPressed: () => Get.toNamed("detector"),
+                child: const Icon(Icons.camera_alt),
+              ),
+              10.pv,
+              FloatingActionButton(
+                heroTag: "chatbot",
+                child: Icon(Icons.chat_outlined, size: 28),
+                onPressed: () => Get.toNamed("chatbot"),
+              ),
+            ],
           ),
           bottomNavigationBar: Stack(
             alignment: Alignment.bottomCenter,
             clipBehavior: Clip.none,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.2),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: const Offset(0, -2),
-                    ),
-                  ],
-                ),
-                child: BottomNavigationBar(
-                  backgroundColor: Colors.white,
-                  selectedItemColor: AppColors.primaryColor,
-                  unselectedItemColor: Colors.grey,
-                  currentIndex: 0,
-                  type: BottomNavigationBarType.fixed,
-                  items: const [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home),
-                      label: 'Feed',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: SizedBox.shrink(), // Espacio vacío para el FAB
-                      label: '',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.settings),
-                      label: 'Ajustes',
-                    ),
-                  ],
-                  onTap: controller.onBottomNavTap,
-                ),
-              ),
-              // Botón flotante central
-              Positioned(
-                bottom: 40,
-                child: Container(
-                  height: 64,
-                  width: 64,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        spreadRadius: 1,
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+              BottomNavigationBar(
+                currentIndex: 0,
+                type: BottomNavigationBarType.fixed,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Feed',
                   ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () => controller.onBottomNavTap(1),
-                      customBorder: const CircleBorder(),
-                      child: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.black,
-                        size: 28,
-                      ),
-                    ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.settings),
+                    label: 'Ajustes',
                   ),
-                ),
+                ],
+                onTap: controller.onBottomNavTap,
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+class UserGreetingsWidget extends StatelessWidget {
+  const UserGreetingsWidget({super.key, required this.authController});
+
+  final AuthController authController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Column(
+        children: [
+          Text(
+            "Hola ${authController.userPayload["name"]}! 👋",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 24, fontFamily: AppFonts.primaryFont),
+          ),
+          10.pv,
+          CircleAvatar(
+            radius: 50,
+            backgroundImage: NetworkImage(
+              "${authController.userPayload["avatar_url"]}",
+            ),
+            backgroundColor: Colors.grey[200], // fallback background
+          ),
+        ],
+      ),
     );
   }
 }

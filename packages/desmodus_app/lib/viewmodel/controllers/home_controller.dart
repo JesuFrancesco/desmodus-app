@@ -36,25 +36,25 @@ class SightingMarker {
 class HomeController extends GetxController {
   // Lista observable de noticias
   final RxList<News> newsList = <News>[].obs;
-  
+
   // Índice actual del bottom navigation
   final RxInt currentIndex = 0.obs;
-  
+
   // Lista de IDs de noticias marcadas como importantes
   final RxList<String> importantNewsIds = <String>[].obs;
-  
+
   // Ubicación del usuario
   final Rxn<LatLng> userLocation = Rxn<LatLng>();
-  
+
   // Zonas críticas
   final RxList<CriticalZone> criticalZones = <CriticalZone>[].obs;
-  
+
   // Marcadores de avistamientos
   final RxList<SightingMarker> sightingMarkers = <SightingMarker>[].obs;
-  
+
   // Estado de zona crítica
   final RxBool isInCriticalZone = false.obs;
-  
+
   // Notificaciones locales
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -71,18 +71,19 @@ class HomeController extends GetxController {
   // Inicializar notificaciones
   void _initializeNotifications() async {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    
+
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings();
-    
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
-    
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS,
+        );
+
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
@@ -99,7 +100,7 @@ class HomeController extends GetxController {
       Get.snackbar(
         'Ubicación desactivada',
         'Activa la ubicación para recibir alertas de zonas críticas',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
       return;
     }
@@ -174,7 +175,7 @@ class HomeController extends GetxController {
 
       if (distance <= zone.radius) {
         isInCriticalZone.value = true;
-        
+
         // Enviar notificación si acaba de entrar a la zona
         if (!wasInCriticalZone) {
           _sendCriticalZoneNotification(zone);
@@ -188,17 +189,19 @@ class HomeController extends GetxController {
   void _sendCriticalZoneNotification(CriticalZone zone) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'critical_zones',
-      'Zonas Críticas',
-      channelDescription: 'Alertas de zonas con alta presencia de murciélagos',
-      importance: Importance.high,
-      priority: Priority.high,
-      showWhen: true,
+          'critical_zones',
+          'Zonas Críticas',
+          channelDescription:
+              'Alertas de zonas con alta presencia de murciélagos',
+          importance: Importance.high,
+          priority: Priority.high,
+          showWhen: true,
+        );
+
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
     );
-    
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    
+
     await flutterLocalNotificationsPlugin.show(
       0,
       '⚠️ Alerta de Zona Crítica',
@@ -241,22 +244,27 @@ class HomeController extends GetxController {
       News(
         id: '1',
         title: 'Como reportar especies avistadas al SENASA',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce placerat nulla felis, ac efficitur dui faucibus consectetur. Nam',
+        description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce placerat nulla felis, ac efficitur dui faucibus consectetur. Nam',
         imageUrl: 'https://www.cedepas.org.pe/sites/default/files/senasa2.png',
         isUrgent: false,
       ),
       News(
         id: '2',
         title: 'Hábitat del murciélago vampiro',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce placerat nulla felis, ac efficitur dui faucibus consectetur. Nam',
-        imageUrl: 'https://media.es.wired.com/photos/6541313838775b6e711ea9e2/16:9/w_1920,c_limit/Vampire%20Bat_GettyImages-150370788.jpg',
+        description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce placerat nulla felis, ac efficitur dui faucibus consectetur. Nam',
+        imageUrl:
+            'https://media.es.wired.com/photos/6541313838775b6e711ea9e2/16:9/w_1920,c_limit/Vampire%20Bat_GettyImages-150370788.jpg',
         isUrgent: false,
       ),
       News(
         id: '3',
         title: 'Brote de rabia en San Martín de Porres',
-        description: 'Se han confirmado 3 casos de rabia en animales domésticos. SENASA recomienda vacunación inmediata',
-        imageUrl: 'https://noticias-pe.laiglesiadejesucristo.org/media/960x540/SMP-distrito.jpg',
+        description:
+            'Se han confirmado 3 casos de rabia en animales domésticos. SENASA recomienda vacunación inmediata',
+        imageUrl:
+            'https://noticias-pe.laiglesiadejesucristo.org/media/960x540/SMP-distrito.jpg',
         isUrgent: true,
       ),
     ];
@@ -268,7 +276,7 @@ class HomeController extends GetxController {
   // Verificar noticias urgentes
   void _checkForUrgentNews() {
     final urgentNews = newsList.where((news) => news.isUrgent).toList();
-    
+
     for (var news in urgentNews) {
       _sendUrgentNewsNotification(news);
     }
@@ -278,17 +286,19 @@ class HomeController extends GetxController {
   void _sendUrgentNewsNotification(News news) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'urgent_news',
-      'Noticias Urgentes',
-      channelDescription: 'Notificaciones de noticias urgentes sobre murciélagos',
-      importance: Importance.max,
-      priority: Priority.max,
-      showWhen: true,
+          'urgent_news',
+          'Noticias Urgentes',
+          channelDescription:
+              'Notificaciones de noticias urgentes sobre murciélagos',
+          importance: Importance.max,
+          priority: Priority.max,
+          showWhen: true,
+        );
+
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
     );
-    
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    
+
     await flutterLocalNotificationsPlugin.show(
       news.id.hashCode,
       '🚨 ${news.title}',
@@ -298,29 +308,29 @@ class HomeController extends GetxController {
   }
 
   // Marcar/desmarcar noticia como importante
-void toggleImportantNews(String newsId) {
-  if (importantNewsIds.contains(newsId)) {
-    importantNewsIds.remove(newsId);
-    Get.snackbar(
-      '✓ Removido',
-      'Noticia removida de importantes',
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2),
-      backgroundColor: Colors.grey[800],
-      colorText: Colors.white,
-    );
-  } else {
-    importantNewsIds.add(newsId);
-    Get.snackbar(
-      '! Importante',
-      'Noticia marcada como importante',
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2),
-      backgroundColor: AppColors.warningColor,
-      colorText: Colors.white,
-    );
+  void toggleImportantNews(String newsId) {
+    if (importantNewsIds.contains(newsId)) {
+      importantNewsIds.remove(newsId);
+      Get.snackbar(
+        '✓ Removido',
+        'Noticia removida de importantes',
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.grey[800],
+        colorText: Colors.white,
+      );
+    } else {
+      importantNewsIds.add(newsId);
+      Get.snackbar(
+        '! Importante',
+        'Noticia marcada como importante',
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 2),
+        backgroundColor: AppColors.warningColor,
+        colorText: Colors.white,
+      );
+    }
   }
-}
 
   // Verificar si una noticia está marcada como importante
   bool isNewsImportant(String newsId) {
@@ -333,7 +343,7 @@ void toggleImportantNews(String newsId) {
     Get.snackbar(
       'Compartir',
       'Compartiendo: ${news.title}',
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition: SnackPosition.TOP,
     );
   }
 
@@ -345,20 +355,17 @@ void toggleImportantNews(String newsId) {
   // Manejar tap en el bottom navigation
   void onBottomNavTap(int index) {
     currentIndex.value = index;
-    
+
     switch (index) {
       case 0:
         // Ya estamos en home
         break;
       case 1:
-        Get.toNamed('/detector');
-        break;
-      case 2:
         // Get.toNamed('/settings');
         Get.snackbar(
           'Navegación',
           'Ir a ajustes',
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
         );
         break;
     }
