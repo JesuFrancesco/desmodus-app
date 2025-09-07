@@ -175,7 +175,7 @@ async def auth_callback_android(
 
     if not existing_user:
         avatar_url = (
-            f"https://cdn.discordapp.com/avatars/{user_info["id"]}/{user_info.get("avatar")}.png"
+            f'https://cdn.discordapp.com/avatars/{user_info["id"]}/{user_info.get("avatar")}.png'
             if user_info.get("avatar")
             else ""
         )
@@ -195,7 +195,7 @@ async def auth_callback_android(
         existing_user.name = user_info["username"]
         existing_user.email = user_info["email"]
         existing_user.avatar_url = (
-            f"https://cdn.discordapp.com/avatars/{user_info["id"]}/{user_info.get("avatar")}.png"
+            f'https://cdn.discordapp.com/avatars/{user_info["id"]}/{user_info.get("avatar")}.png'
             if user_info.get("avatar")
             else existing_user.avatar_url
         )
