@@ -1,14 +1,15 @@
-# Desmodus App Backend
+# Server (FastAPI Server)
 
-## Ambiente de desarrollo
+Carpeta con el proyecto de FastAPI server
 
-### Environment variables
-
-1. Asignar los secretos requeridos en [.env](.env)
-2. Correr el [comando de ejecución](#comando-de-ejecución)
-
-### Comando de ejecución
+## Correr proyecto
 
 ```sh
-flutter run --dart-define-from-file .env
+python -m main
+```
+
+## Pruebas unitarias
+
+```sh
+pytest
 ```

@@ -1,0 +1,13 @@
+alembic
+fastapi[standard]
+Faker
+humps
+pillow
+pydantic-settings
+psycopg2-binary
+PyJWT
+pytest
+requests
+sqlmodel
+supabase
+supafunc

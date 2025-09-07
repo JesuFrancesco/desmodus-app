@@ -1,0 +1,18 @@
+{
+  "name": "k6-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "k6 run -e API_URL=$API_URL src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/k6": "^1.0.2",
+    "@types/node": "^24.0.0",
+    "dotenv": "^16.5.0"
+  }
+}
