@@ -4,6 +4,7 @@ run-name: Supabase heartbeat - ${{ github.ref_name }}
 on:
   schedule:
     - cron: "0 17 * * *"
+  workflow_dispatch:
 
 env:
   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
