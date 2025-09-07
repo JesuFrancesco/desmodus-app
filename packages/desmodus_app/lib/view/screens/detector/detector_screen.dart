@@ -64,6 +64,14 @@ class DetectorScreen extends StatelessWidget {
                   () => Stack(
                     children: [
                       UltralyticsYoloCameraPreview(
+                        boundingBoxesColorList: [
+                          Colors.red,
+                          Colors.green,
+                          Colors.blue,
+                          Colors.yellow,
+                          Colors.purple,
+                          Colors.orange,
+                        ],
                         controller: ultralyticsController,
                         predictor: predictor,
                         onCameraCreated: () {

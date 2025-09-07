@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AuthService {
   Future<String> flutterGoogleCallback(String gAccessToken) async {
-    final url = Uri.parse("${Config.authApiUrl}/google-auth/flutter-callback");
+    final url = Uri.parse("${Config.apiUrl}/google-auth/flutter-callback");
 
     final response = await http.post(
       url,
@@ -64,7 +64,7 @@ class AuthService {
   }
 
   Future<Map<String, dynamic>> getUserPayload(String jwt) async {
-    final uri = Uri.parse("${Config.authApiUrl}/auth/current-user");
+    final uri = Uri.parse("${Config.apiUrl}/auth/current-user");
 
     final response = await http.get(
       uri,

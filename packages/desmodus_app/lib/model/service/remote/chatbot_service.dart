@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class AssistantService {
   Future<String> preguntarChatbot(String message) async {
     final uri = Uri.parse(
-      '${Config.chatbotApiUrl}/chat?prompt=${Uri.encodeComponent(message)}',
+      '${Config.apiUrl}/chat?prompt=${Uri.encodeComponent(message)}',
     );
 
     final response = await http.get(uri);
