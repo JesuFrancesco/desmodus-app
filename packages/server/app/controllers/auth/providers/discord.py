@@ -25,7 +25,7 @@ def login():
     return {
         "auth_url": f"https://discord.com/oauth2/authorize"
         f"?client_id={DISCORD_CLIENT_ID}&redirect_uri={DISCORD_CALLBACK_URL}"
-        f"&response_type=code&scope=identify"
+        f"&response_type=code&scope=email+identify"
     }
 
 
@@ -166,6 +166,7 @@ async def auth_callback_android(
             USERINFO_URL, headers={"Authorization": f"Bearer {access_token}"}
         )
         user_info = user_res.json()
+        print("User Info:", user_info)
 
     # 2. Check if the user exists in the database
     existing_user = session.exec(
@@ -173,9 +174,15 @@ async def auth_callback_android(
     ).first()
 
     if not existing_user:
+        avatar_url = (
+            f"https://cdn.discordapp.com/avatars/{user_info["id"]}/{user_info.get("avatar")}.png"
+            if user_info.get("avatar")
+            else ""
+        )
         new_user = Users(
             name=user_info["username"],
             email=user_info["email"],
+            avatar_url=avatar_url,
             phone="",
             dni="",
             distrito_id=None,
@@ -184,6 +191,17 @@ async def auth_callback_android(
         session.commit()
         session.refresh(new_user)
         existing_user = new_user
+    else:
+        existing_user.name = user_info["username"]
+        existing_user.email = user_info["email"]
+        existing_user.avatar_url = (
+            f"https://cdn.discordapp.com/avatars/{user_info["id"]}/{user_info.get("avatar")}.png"
+            if user_info.get("avatar")
+            else existing_user.avatar_url
+        )
+        session.add(existing_user)
+        session.commit()
+        session.refresh(existing_user)
 
     jWebToken = write_token(
         {
@@ -203,7 +221,7 @@ async def auth_callback_android(
 
     response.headers["Content-Type"] = "text/plain"
     response.headers["Location"] = (
-        f"github.jesufrancesco.desmodus_app://main/auth-callback?jwt={jWebToken}"
+        f"github.jesufrancesco.desmodus-app://main/auth-callback?jwt={jWebToken}"
     )
     response.status_code = 302
     response.body = b"Redirecting..."
