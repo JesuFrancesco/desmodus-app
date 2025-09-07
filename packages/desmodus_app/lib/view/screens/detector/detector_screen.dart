@@ -5,6 +5,10 @@ import 'package:desmodus_app/view/screens/detector/widget/missing_permissions.da
     show PermissionsMissingWidget;
 import 'package:desmodus_app/view/screens/detector/widget/times.dart'
     show Times;
+import 'package:desmodus_app/viewmodel/auth_controller.dart'
+    show AuthController;
+import 'package:desmodus_app/viewmodel/controllers/sightings/client_sightings_controller.dart'
+    show ClientSightingsController;
 import 'package:desmodus_app/viewmodel/detector_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,6 +24,8 @@ class DetectorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<DetectorController>();
+    final clientSightingsController = Get.find<ClientSightingsController>();
+    final authController = Get.find<AuthController>();
     final ultralyticsController = UltralyticsYoloCameraController(
       deferredProcessing: true,
     );
@@ -80,6 +86,10 @@ class DetectorScreen extends StatelessWidget {
                             controller.detectionThreshold.value,
                           );
                         },
+                        injectedClientSightingsController:
+                            clientSightingsController,
+                        injectedAuthState: authController.isSignedId,
+                        injectedSpecies: "Murciélago vampiro",
                       ),
                       StreamBuilder<double?>(
                         stream: predictor.inferenceTime,

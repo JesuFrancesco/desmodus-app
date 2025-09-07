@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:desmodus_app/viewmodel/controllers/sightings/client_sightings_controller.dart'
+    show ClientSightingsController;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +18,9 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
     required this.predictor,
     required this.controller,
     required this.onCameraCreated,
+    required this.injectedAuthState,
+    required this.injectedClientSightingsController,
+    required this.injectedSpecies,
     this.boundingBoxesColorList = const [Colors.green, Colors.red],
     this.classificationOverlay,
     this.loadingPlaceholder,
@@ -39,6 +44,10 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
 
   /// The placeholder widget displayed while the predictor is loading.
   final Widget? loadingPlaceholder;
+
+  final ClientSightingsController injectedClientSightingsController;
+  final bool injectedAuthState;
+  final String injectedSpecies;
 
   @override
   State<UltralyticsYoloCameraPreview> createState() =>
@@ -126,8 +135,6 @@ class _UltralyticsYoloCameraPreviewState
 
                       final inferenceData = snapshot.data!;
                       print("inferenceData !!!!");
-                      print("inferenceData !!!!");
-                      print("inferenceData !!!!");
                       print(inferenceData);
 
                       if (inferenceData.isEmpty) {
@@ -140,19 +147,46 @@ class _UltralyticsYoloCameraPreviewState
 
                       // PostFrame para no interrumpir el frame actual
                       // y evitar problemas de rendimiento
-                      WidgetsBinding.instance.addPostFrameCallback((
-                        _,
-                      ) async {
-                        // Verificamos si se ha detectado el caracol africano
-                        if (inferenceData.every(
-                          (detectedObject) =>
-                              detectedObject?.label != "african-snail",
-                        )) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        if (inferenceData.every((detectedObject) =>
+                            detectedObject?.label != "desmodus-rotundus")) {
                           return;
                         }
 
                         // Incrementamos el contador de inferencias
-                        // WIP
+                        // y verificamos si ya hemos inferido 30 veces
+                        widget.injectedClientSightingsController
+                            .incrementInferenceCount();
+
+                        // Si hemos inferido 30 veces, registramos el avistamiento
+                        // y mostramos el diálogo de especie detectada
+                        if (widget.injectedClientSightingsController
+                                .inferencedTimes.value >=
+                            30) {
+                          // Reiniciamos el contador de inferencias
+                          widget.injectedClientSightingsController
+                              .resetInferenceCount();
+
+                          // Desactivamos la predicción en vivo
+                          widget.controller.toggleLivePrediction();
+
+                          // Tomamos la foto
+                          final imageFilePath =
+                              await widget.controller.takePicture();
+
+                          if (imageFilePath == null) {
+                            print("Error al tomar la foto");
+                            return;
+                          }
+
+                          // Registramos el avistamiento de forma local
+                          widget.injectedClientSightingsController
+                              .addSighting(imageFilePath);
+
+                          // Mostramos el diálogo de especie detectada
+                          showDetectedSpeciesDialog(
+                              context.mounted ? context : context);
+                        }
                       });
 
                       return CustomPaint(

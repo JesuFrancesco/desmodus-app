@@ -5,11 +5,11 @@ import 'package:desmodus_app/utils/cookies.dart';
 class AuthController extends GetxController {
   final _service = AuthService();
   final usuarioCompleto = false.obs;
-  final userPayload = <String, dynamic>{}.obs;
+  final userData = <String, dynamic>{}.obs;
   final isLoading = false.obs;
 
   String? get accessToken => getCookie("access_token");
-  bool get isSignedId => userPayload.isEmpty ? false : true;
+  bool get isSignedId => userData.isEmpty ? false : true;
 
   @override
   void onInit() {
@@ -23,7 +23,7 @@ class AuthController extends GetxController {
 
       final user = await _service.getUserPayload(newToken ?? accessToken!);
 
-      userPayload.value = user;
+      userData.value = user;
 
       if (usuarioCompleto.value || _isUserDataComplete(user)) {
         usuarioCompleto.value = true;

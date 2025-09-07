@@ -28,7 +28,7 @@ Fecha ${DateFormat('dd/MM/yyyy HH:MM').format(avistamiento.detectedAt)}""";
             width: 100,
             height: 100,
             child: Image.asset(
-              "assets/image/home/caracol.jpg",
+              "assets/image/logo_filled.png",
               fit: BoxFit.contain,
             ),
           ),

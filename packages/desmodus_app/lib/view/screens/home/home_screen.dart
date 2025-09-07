@@ -189,7 +189,7 @@ class UserGreetingsWidget extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "Hola ${authController.userPayload["name"]}! 👋",
+            "Hola ${authController.userData["name"]}! 👋",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 24, fontFamily: AppFonts.primaryFont),
           ),
@@ -197,7 +197,7 @@ class UserGreetingsWidget extends StatelessWidget {
           CircleAvatar(
             radius: 50,
             backgroundImage: NetworkImage(
-              "${authController.userPayload["avatar_url"]}",
+              "${authController.userData["avatar_url"]}",
             ),
             backgroundColor: Colors.grey[200], // fallback background
           ),
