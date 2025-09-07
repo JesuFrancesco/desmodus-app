@@ -8,8 +8,8 @@ class AppLogoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       'assets/image/logo.svg',
-      width: 400.0,
-      height: 400.0,
+      width: 320.0,
+      height: 320.0,
       colorFilter: ColorFilter.mode(
         Theme.of(context).brightness == Brightness.dark
             ? Colors.white

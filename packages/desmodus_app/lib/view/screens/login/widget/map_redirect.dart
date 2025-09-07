@@ -7,7 +7,8 @@ class MapButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => Get.toNamed('/heatmap'),
+      // onPressed: () => Get.toNamed('/heatmap'),
+      onPressed: null,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

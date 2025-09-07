@@ -11,15 +11,16 @@ class NoAuthAccessButton extends StatelessWidget {
     final authController = Get.find<AuthController>();
     return Obx(
       () => ElevatedButton(
-        onPressed: authController.isLoading.value
-            ? null
-            : () => Get.toNamed('/login/no-auth-cta'),
+        onPressed:
+            authController.isLoading.value
+                ? null
+                : () => Get.toNamed('/login/no-auth-cta'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.lock_open),
+            const Icon(Icons.visibility),
             const SizedBox(width: 8),
-            const Text('Ingresar únicamente a detector'),
+            const Text('Ingresar al detector'),
           ],
         ),
       ),

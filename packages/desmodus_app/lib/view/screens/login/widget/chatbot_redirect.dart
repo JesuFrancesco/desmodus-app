@@ -7,7 +7,8 @@ class ChatbotButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => Get.toNamed('/chatbot'),
+      // onPressed: () => Get.toNamed('/chatbot'),
+      onPressed: null,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

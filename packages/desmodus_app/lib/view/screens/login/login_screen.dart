@@ -40,8 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
             AppLogoWidget(),
             // AUTH PROVIDERS
             GoogleSignInButton(),
-            FacebookSignInButton(),
             DiscordSignInButton(),
+            FacebookSignInButton(),
             // DIVIDER
             ShortDivider(),
             // NO AUTH ACCESS BUTTON
@@ -60,33 +60,23 @@ class ShortDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final divider = Divider(
+      height: 50,
+      indent: 50,
+      thickness: 2,
+      color:
+          Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+    );
+
     return Row(
       children: [
-        Expanded(
-          child: Divider(
-            height: 50,
-            indent: 50,
-            thickness: 2,
-            color:
-                Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
-          ),
-        ),
+        Expanded(child: divider),
         10.ph,
         Text('O', style: Theme.of(context).textTheme.titleSmall),
         10.ph,
-        Expanded(
-          child: Divider(
-            height: 50,
-            endIndent: 50,
-            thickness: 2,
-            color:
-                Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
-          ),
-        ),
+        divider,
       ],
     );
   }
