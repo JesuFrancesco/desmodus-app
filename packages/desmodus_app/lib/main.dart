@@ -9,18 +9,13 @@ void main() async {
 
   await GlobalApp.init();
 
-  DeepLinkParser().initDeepLinkHandler();
+  DeepLinkParser().iniciarDeepLinkListener();
 
-  final firstScreen = await DeepLinkParser().getFirstScreen();
-
-  // playIntroAudio();
-
-  runApp(MainApp(firstScreen: firstScreen));
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  final String firstScreen;
-  const MainApp({super.key, required this.firstScreen});
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +35,6 @@ class MainApp extends StatelessWidget {
       );
     }
 
-    return getAppRouter(firstScreen);
+    return getAppRouter("/loading");
   }
 }

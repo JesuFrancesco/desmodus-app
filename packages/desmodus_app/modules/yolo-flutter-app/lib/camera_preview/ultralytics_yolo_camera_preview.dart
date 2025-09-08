@@ -162,7 +162,7 @@ class _UltralyticsYoloCameraPreviewState
                         // y mostramos el diálogo de especie detectada
                         if (widget.injectedClientSightingsController
                                 .inferencedTimes.value >=
-                            30) {
+                            300) {
                           // Reiniciamos el contador de inferencias
                           widget.injectedClientSightingsController
                               .resetInferenceCount();

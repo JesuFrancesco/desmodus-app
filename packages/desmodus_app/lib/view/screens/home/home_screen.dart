@@ -166,6 +166,14 @@ class HomeScreen extends GetView<HomeController> {
                     icon: Icon(Icons.settings),
                     label: 'Ajustes',
                   ),
+                  // BottomNavigationBarItem(
+                  //   icon: Icon(Icons.chat_outlined),
+                  //   label: 'Chatbot',
+                  // ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.photo),
+                    label: 'Galería',
+                  ),
                 ],
                 onTap: controller.onBottomNavTap,
               ),

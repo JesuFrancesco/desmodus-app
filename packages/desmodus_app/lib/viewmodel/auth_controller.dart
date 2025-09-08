@@ -18,6 +18,10 @@ class AuthController extends GetxController {
   }
 
   Future<void> actualizarInfoUsuario({String? newToken}) async {
+    if (accessToken == null && newToken == null) {
+      Get.offAndToNamed("/login");
+    }
+
     try {
       isLoading.value = true;
 
@@ -27,12 +31,12 @@ class AuthController extends GetxController {
 
       if (usuarioCompleto.value || _isUserDataComplete(user)) {
         usuarioCompleto.value = true;
-        Get.offAndToNamed("/home");
       } else {
         Get.offAndToNamed("/cuestionario");
       }
     } catch (e) {
-      print(e);
+      print("⚠️ Actualizar info usuario error: $e");
+      Get.offAndToNamed("/login");
     } finally {
       isLoading.value = false;
     }
@@ -59,7 +63,7 @@ class AuthController extends GetxController {
         storeCookie("access_token", newAccessToken);
         await actualizarInfoUsuario(newToken: newAccessToken);
         print("Autorización exitosa: $newAccessToken");
-        // Get.offAndToNamed("/home");
+        Get.offAndToNamed("/home");
       }
     } catch (e) {
       print(e);

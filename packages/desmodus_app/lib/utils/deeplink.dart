@@ -1,82 +1,72 @@
 import 'package:app_links/app_links.dart';
 import 'package:get/get.dart';
 import 'package:desmodus_app/model/service/remote/auth_service.dart';
-import 'package:desmodus_app/utils/cookies.dart' show storeCookie, getCookie;
+import 'package:desmodus_app/utils/cookies.dart' show storeCookie;
 
 class DeepLinkParser {
+  // Singleton
   DeepLinkParser._();
-
   static final _instance = DeepLinkParser._();
-
   factory DeepLinkParser() => _instance;
 
   final _appLinks = AppLinks();
 
   Future<Uri?> getInitialLink() => _appLinks.getInitialLink();
 
-  Future<Map<String, dynamic>> _getUserPayload(String jwt) =>
-      AuthService().getUserPayload(jwt);
+  void iniciarDeepLinkListener() => _appLinks.uriLinkStream.listen((
+    Uri uri,
+  ) async {
+    print("Entrada por DeepLink: $uri");
 
-  void initDeepLinkHandler() => _appLinks.uriLinkStream.listen((Uri uri) {
-    print("Deep link recibido: $uri");
     final String jwt = uri.queryParameters['jwt'] ?? '';
 
-    if (jwt.isNotEmpty) {
-      storeCookie("access_token", jwt);
+    if (jwt.isEmpty) {
+      return;
+    }
 
-      bool isUserDataComplete(Map<String, dynamic> user) {
-        final requiredFields = ["name", "email", "phone", "dni", "distrito_id"];
-        for (var field in requiredFields) {
-          if (user[field] == null ||
-              (user[field] is String && user[field].trim().isEmpty)) {
-            return false;
-          }
+    storeCookie("access_token", jwt);
+
+    bool isUserDataComplete(Map<String, dynamic> user) {
+      final requiredFields = ["name", "email", "phone", "dni", "distrito_id"];
+      for (var field in requiredFields) {
+        if (user[field] == null ||
+            (user[field] is String && user[field].trim().isEmpty)) {
+          return false;
         }
-        return true;
       }
+      return true;
+    }
 
-      _getUserPayload(jwt)
-          .then((user) {
-            print("Autorización exitosa: $jwt");
-            // Get.offAndToNamed("/home", arguments: payload);
-            if (isUserDataComplete(user)) {
-              Get.offAndToNamed("/home");
-            } else {
-              Get.offAndToNamed("/cuestionario");
-            }
-          })
-          .catchError((e) {
-            print(e);
-          });
+    final user = await AuthService().getUserPayload(jwt);
+    print("Autorización exitosa: $jwt");
+
+    if (isUserDataComplete(user)) {
+      Get.offAndToNamed("/home");
+    } else {
+      Get.offAndToNamed("/cuestionario");
     }
   });
 
-  Future<String> getFirstScreen() async {
-    Uri? uri = await getInitialLink();
+  // Future<void> verifyAuth() async {
+  //   final uri = await getInitialLink();
 
-    if (uri == null) {
-      print("El usuario no ha ingresado con un deep link");
+  //   if (uri == null) {
+  //     final jwt = getCookie("access_token") ?? '';
 
-      print("Verificando el token...");
+  //     if (jwt.isEmpty) {
+  //       Get.offAllNamed("/login");
+  //     } else {
+  //       Get.offAllNamed("/home");
 
-      try {
-        final jwt = getCookie("access_token") ?? '';
-
-        if (jwt.isEmpty) {
-          throw Exception("Token de acceso no encontrado");
-        }
-
-        final payload = await _getUserPayload(jwt);
-        print("Autorización exitosa: $jwt");
-        print(payload);
-
-        return "/home";
-      } catch (e) {
-        print("Error en la autorización: $e");
-      }
-    }
-
-    // TODO: manejar deeplinks a pantallas específicas
-    return "/login";
-  }
+  //       try {
+  //         final payload = await AuthService().getUserPayload(jwt);
+  //         // Stay in home
+  //         print("Token válido: $payload");
+  //       } catch (e) {
+  //         print("Token inválido: $e");
+  //         Get.offAllNamed("/login");
+  //       }
+  //     }
+  //   }
+  // }
 }
