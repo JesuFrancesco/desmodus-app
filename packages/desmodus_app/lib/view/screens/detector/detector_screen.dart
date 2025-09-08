@@ -189,7 +189,10 @@ class DetectorScreen extends StatelessWidget {
                             Obx(
                               () => Container(
                                 width:
-                                    (controller.inferencedCombo.value / 30)
+                                    (clientSightingsController
+                                                .inferencedTimes
+                                                .value /
+                                            30)
                                         .clamp(0.0, 1.0) *
                                     MediaQuery.of(context).size.width,
                                 height: 20,
