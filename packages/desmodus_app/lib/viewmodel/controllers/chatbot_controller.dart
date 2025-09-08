@@ -24,19 +24,21 @@ class AssistantController extends GetxController {
     try {
       final consulta = message.message;
 
-      String respuestaBot = "";
+      String respuestaBot = "...";
 
-      var repsonse = LocalMessage(
+      final response = LocalMessage(
         sender: "DesmodusBot",
         message: respuestaBot,
         createdAt: DateTime.now(),
       );
 
-      messages.add(repsonse);
+      messages.add(response);
       final messageIndex = messages.length - 1;
 
       final botResponse = await service.preguntarChatbot(consulta);
+
       messages[messageIndex] = LocalMessage(
+        sender: "DesmodusBot",
         message: botResponse,
         createdAt: DateTime.now(),
       );

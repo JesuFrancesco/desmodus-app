@@ -41,11 +41,13 @@ class _LoginScreenState extends State<LoginScreen> {
             GoogleSignInButton(),
             DiscordSignInButton(),
             FacebookSignInButton(),
+
             // DIVIDER
             Divider(
               thickness: 2,
               color: Colors.grey[300],
             ).paddingSymmetric(horizontal: 32, vertical: 16),
+
             // NO AUTH ACCESS BUTTON
             NoAuthAccessButton(),
             MapButton(),

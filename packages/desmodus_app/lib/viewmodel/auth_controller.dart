@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show WidgetsBinding;
 import 'package:get/get.dart';
 import 'package:desmodus_app/model/service/remote/auth_service.dart';
 import 'package:desmodus_app/utils/cookies.dart';
@@ -14,16 +15,20 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    actualizarInfoUsuario();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      actualizarInfoUsuario();
+    });
   }
 
   Future<void> actualizarInfoUsuario({String? newToken}) async {
     if (accessToken == null && newToken == null) {
-      Get.offAndToNamed("/login");
+      return Get.offAndToNamed("/login");
     }
 
     try {
       isLoading.value = true;
+
+      Get.offAndToNamed("/home");
 
       final user = await _service.getUserPayload(newToken ?? accessToken!);
 

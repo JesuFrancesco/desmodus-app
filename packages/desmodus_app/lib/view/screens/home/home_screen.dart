@@ -192,25 +192,36 @@ class UserGreetingsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Column(
-        children: [
-          Text(
-            "Hola ${authController.userData["name"]}! 👋",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 24, fontFamily: AppFonts.primaryFont),
-          ),
-          10.pv,
-          CircleAvatar(
-            radius: 50,
-            backgroundImage: NetworkImage(
-              "${authController.userData["avatar_url"]}",
-            ),
-            backgroundColor: Colors.grey[200], // fallback background
-          ),
-        ],
-      ),
+    return Obx(
+      () =>
+          authController.isLoading.value
+              ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: const CircularProgressIndicator(),
+              )
+              : Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      "Hola ${authController.userData["name"]}! 👋",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontFamily: AppFonts.primaryFont,
+                      ),
+                    ),
+                    10.pv,
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(
+                        "${authController.userData["avatar_url"]}",
+                      ),
+                      backgroundColor: Colors.grey[200], // fallback background
+                    ),
+                  ],
+                ),
+              ),
     );
   }
 }
