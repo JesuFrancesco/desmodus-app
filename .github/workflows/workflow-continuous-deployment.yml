@@ -99,6 +99,7 @@ jobs:
           # Preparar dist/
           mkdir -p dist
           cp -r android-artifacts/dist/* dist/ || true
+          cp -r android-artifacts/dist/releases/* dist/ || true
           cp server.zip dist/ || true
 
           echo "== Contenido de dist ==" >> $GITHUB_STEP_SUMMARY
