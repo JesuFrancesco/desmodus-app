@@ -1,6 +1,7 @@
-import 'package:desmodus_app/view/screens/home/home_screen.dart';
+import 'package:desmodus_app/view/screens/home/feed/feed_screen.dart';
 import 'package:desmodus_app/view/screens/detector/detector_screen.dart';
 import 'package:desmodus_app/view/screens/heatmap/heatmap_screen.dart';
+import 'package:desmodus_app/view/screens/home/home_screen.dart';
 import 'package:desmodus_app/view/screens/loading/loading_screen.dart'
     show LoadingScreen;
 import 'package:desmodus_app/view/screens/news_detail/news_detail_screen.dart';
@@ -37,6 +38,11 @@ GetMaterialApp getAppRouter(String firstScreen) {
       GetPage(
         name: '/home',
         page: () => const HomeScreen(),
+        children: [
+          GetPage(name: '/feed', page: () => const FeedScreen()),
+          GetPage(name: '/settings', page: () => const FeedScreen()),
+          GetPage(name: '/gallery', page: () => const FeedScreen()),
+        ],
         binding: HomeBindings(),
       ),
       GetPage(

@@ -355,20 +355,6 @@ class HomeController extends GetxController {
   // Manejar tap en el bottom navigation
   void onBottomNavTap(int index) {
     currentIndex.value = index;
-
-    switch (index) {
-      case 0:
-        // Ya estamos en home
-        break;
-      case 1:
-        // Get.toNamed('/settings');
-        Get.snackbar(
-          'Navegación',
-          'Ir a ajustes',
-          snackPosition: SnackPosition.TOP,
-        );
-        break;
-    }
   }
 
   @override

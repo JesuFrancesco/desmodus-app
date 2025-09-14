@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:desmodus_app/model/entity/news.dart';
-import 'package:desmodus_app/view/ui/theme/colors.dart';
 import 'package:desmodus_app/view/ui/theme/fonts.dart';
 import 'package:get/get.dart';
 import 'package:desmodus_app/viewmodel/controllers/home_controller.dart';
@@ -9,8 +8,7 @@ class NewsCard extends GetView<HomeController> {
   final News news;
   final VoidCallback onTap;
 
-  const NewsCard({Key? key, required this.news, required this.onTap})
-    : super(key: key);
+  const NewsCard({super.key, required this.news, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -94,49 +92,6 @@ class NewsCard extends GetView<HomeController> {
                   ),
                 ),
               ],
-            ),
-          ),
-          // Botón de importante en la esquina superior derecha
-          Positioned(
-            top: -8,
-            right: -7,
-            child: Obx(
-              () => GestureDetector(
-                onTap: () => controller.toggleImportantNews(news.id),
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color:
-                        controller.isNewsImportant(news.id)
-                            ? AppColors.warningColor
-                            : Colors.grey[300],
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        spreadRadius: 1,
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      '!',
-                      style: TextStyle(
-                        color:
-                            controller.isNewsImportant(news.id)
-                                ? Colors.white
-                                : Colors.grey[600],
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppFonts.primaryFont,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ),
           ),
         ],

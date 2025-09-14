@@ -10,15 +10,12 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
       body: CustomScrollView(
         slivers: [
           // App Bar con imagen
           SliverAppBar(
             expandedHeight: 250,
             pinned: true,
-            backgroundColor: Colors.white,
-            iconTheme: const IconThemeData(color: Colors.white),
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 fit: StackFit.expand,
@@ -29,37 +26,10 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
                         controller.news.imageUrl!,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Icon(
-                              Icons.image,
-                              color: Colors.grey,
-                              size: 80,
-                            ),
-                          );
+                          return const Icon(Icons.image, size: 80);
                         },
                       )
-                      : Container(
-                        color: Colors.grey[300],
-                        child: const Icon(
-                          Icons.image,
-                          color: Colors.grey,
-                          size: 80,
-                        ),
-                      ),
-                  // Gradiente oscuro
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 0.7),
-                        ],
-                      ),
-                    ),
-                  ),
+                      : const Icon(Icons.image, size: 80),
                   // Botones de acción
                   Positioned(
                     top: MediaQuery.of(context).padding.top + 8,
@@ -73,7 +43,7 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.share, color: Colors.white),
+                            icon: const Icon(Icons.share),
                             onPressed: () => controller.shareNews(),
                           ),
                         ),
@@ -92,7 +62,6 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
                               icon: Text(
                                 '!',
                                 style: TextStyle(
-                                  color: Colors.white,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: AppFonts.primaryFont,
@@ -129,22 +98,17 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
                                 controller.news.publishedAt!,
                               ),
                               style: TextStyle(
-                                color: Colors.grey[600],
                                 fontSize: 14,
                                 fontFamily: AppFonts.primaryFont,
                               ),
                             ),
                           if (controller.news.publishedAt != null &&
                               controller.news.author != null)
-                            Text(
-                              ' • ',
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
+                            Text(' • '),
                           if (controller.news.author != null)
                             Text(
                               controller.news.author!,
                               style: TextStyle(
-                                color: Colors.grey[600],
                                 fontSize: 14,
                                 fontFamily: AppFonts.primaryFont,
                               ),
@@ -170,7 +134,6 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
                     controller.news.description,
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.grey[700],
                       fontFamily: AppFonts.primaryFont,
                       height: 1.4,
                     ),
@@ -229,7 +192,6 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
                           '• Vacuna a tus mascotas contra la rabia',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey[700],
                             fontFamily: AppFonts.primaryFont,
                             height: 1.5,
                           ),
@@ -245,18 +207,18 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () => Get.toNamed('/detector'),
-                      icon: const Icon(Icons.camera_alt),
+                      icon: const Icon(Icons.camera_alt, color: Colors.white),
                       label: const Text(
                         'Reportar Avistamiento',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           fontFamily: AppFonts.primaryFont,
+                          color: Colors.white,
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColor,
-                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
