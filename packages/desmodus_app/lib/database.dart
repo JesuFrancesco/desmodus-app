@@ -10,6 +10,12 @@ class Sightings extends Table {
   RealColumn get longitude => real()();
   TextColumn get description => text()();
   TextColumn get imagePath => text().nullable()();
+
+  RealColumn get x => real().nullable()();
+  RealColumn get y => real().nullable()();
+  RealColumn get w => real().nullable()();
+  RealColumn get h => real().nullable()();
+
   DateTimeColumn get date => dateTime().withDefault(Constant(DateTime.now()))();
   IntColumn get userId => integer()();
 }

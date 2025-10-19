@@ -1,3 +1,4 @@
+import 'package:desmodus_app/utils/padding_extensions.dart';
 import 'package:desmodus_app/view/screens/home/feed/feed_screen.dart'
     show FeedScreen;
 import 'package:desmodus_app/view/screens/home/gallery/gallery_screen.dart'
@@ -5,6 +6,7 @@ import 'package:desmodus_app/view/screens/home/gallery/gallery_screen.dart'
 import 'package:desmodus_app/view/screens/home/settings/settings_screen.dart'
     show SettingsScreen;
 import 'package:desmodus_app/view/ui/theme/fonts.dart';
+import 'package:desmodus_app/viewmodel/controllers/sync_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:desmodus_app/viewmodel/controllers/home_controller.dart';
@@ -27,6 +29,8 @@ class HomeScreen extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    final synController = Get.find<SyncController>();
+
     return Stack(
       children: [
         Scaffold(
@@ -41,6 +45,23 @@ class HomeScreen extends GetView<HomeController> {
                 fontFamily: AppFonts.primaryFont,
               ),
             ),
+            actions: [
+              Obx(
+                () =>
+                    synController.isSyncing.value
+                        ? Row(
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: const CircularProgressIndicator(),
+                            ),
+                            20.ph,
+                          ],
+                        )
+                        : const SizedBox.shrink(),
+              ),
+            ],
           ),
           body: Scaffold(
             body: Obx(() => _buildCurrentScreen()),

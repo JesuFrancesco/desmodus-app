@@ -27,6 +27,5 @@ def get_logger(name: str) -> logging.Logger:
             handler.setFormatter(formatter)
             logger.addHandler(handler)
 
-        logger.info("Logger configurado correctamente")
         _loggers[name] = logger
         return logger

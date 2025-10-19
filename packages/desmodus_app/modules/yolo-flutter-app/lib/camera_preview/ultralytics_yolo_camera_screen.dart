@@ -66,6 +66,7 @@ class _UltralyticsYoloCameraPreviewState
 
   final double _maxZoomLevel = 5;
 
+  // ignore: strict_top_level_inference
   void _onPlatformViewCreated(_) {
     widget.onCameraCreated();
   }
@@ -133,71 +134,36 @@ class _UltralyticsYoloCameraPreviewState
                         return Container();
                       }
 
-                      final inferenceData = snapshot.data!;
-                      print("inferenceData !!!!");
-                      print(inferenceData);
+                      final inferenceData =
+                          snapshot.data! as List<DetectedObject>;
 
                       if (inferenceData.isEmpty) {
                         // Decrementamos el contador de inferencias
                         WidgetsBinding.instance.addPostFrameCallback((_) {
-                          // WIP
+                          widget.injectedClientSightingsController
+                              .decrementInferenceCount();
                         });
                         return Container();
                       }
 
                       // PostFrame para no interrumpir el frame actual
                       // y evitar problemas de rendimiento
-                      WidgetsBinding.instance.addPostFrameCallback((_) async {
-                        if (inferenceData.every((detectedObject) =>
-                            detectedObject?.label != "desmodus-rotundus")) {
-                          return;
-                        }
-
-                        // Incrementamos el contador de inferencias
-                        // y verificamos si ya hemos inferido 30 veces
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
                         widget.injectedClientSightingsController
-                            .incrementInferenceCount();
-
-                        // Si hemos inferido 30 veces, registramos el avistamiento
-                        // y mostramos el diálogo de especie detectada
-                        if (widget.injectedClientSightingsController
-                                .inferencedTimes.value >=
-                            300) {
-                          // Reiniciamos el contador de inferencias
-                          widget.injectedClientSightingsController
-                              .resetInferenceCount();
-
-                          // Desactivamos la predicción en vivo
-                          widget.controller.toggleLivePrediction();
-
-                          // Tomamos la foto
-                          final imageFilePath =
-                              await widget.controller.takePicture();
-
-                          if (imageFilePath == null) {
-                            print("Error al tomar la foto");
-                            return;
-                          }
-
-                          // Registramos el avistamiento de forma local
-                          widget.injectedClientSightingsController
-                              .addSighting(imageFilePath);
-
-                          // Mostramos el diálogo de especie detectada
-                          showDetectedSpeciesDialog(
-                              context.mounted ? context : context);
-                        }
+                            .handleDetectedObjects(
+                                inferenceData, widget.controller);
                       });
 
                       return CustomPaint(
                         painter: ObjectDetectorPainter(
-                          snapshot.data! as List<DetectedObject>,
+                          inferenceData,
                           widget.boundingBoxesColorList,
                           widget.controller.value.strokeWidth,
                         ),
                       );
                     },
                   );
+
                 // ignore: type_literal_in_constant_pattern PORFAVOR IGNORAR ESTE WARNING ME QUITO MEDIO DÍA DEBUGEANDOLO
                 case ImageClassifier:
                   return widget.classificationOverlay ??
@@ -279,6 +245,8 @@ class _UltralyticsYoloCameraPreviewState
           ),
           content: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
                 height: 120,

@@ -5,7 +5,7 @@ import 'package:desmodus_app/viewmodel/auth_controller.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:desmodus_app/view/screens/home/feed/widgets/news_card.dart';
-import 'package:desmodus_app/view/screens/home/feed/widgets/affected_zones_map.dart';
+import 'package:desmodus_app/view/screens/home/feed/widgets/heatmap_preview.dart';
 import 'package:desmodus_app/view/screens/home/feed/widgets/district_ranking.dart';
 import 'package:desmodus_app/viewmodel/controllers/home_controller.dart';
 
@@ -79,7 +79,7 @@ class FeedScreen extends GetView<HomeController> {
                         ),
                       ),
                       16.pv,
-                      const AffectedZonesMap(),
+                      SizedBox(height: 300, child: const HeatmapPreview()),
                     ],
                   ),
 
@@ -101,34 +101,7 @@ class FeedScreen extends GetView<HomeController> {
                       const DistrictRanking(),
                     ],
                   ),
-
                   16.pv,
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Center(
-                      child: TextButton(
-                        style: Theme.of(
-                          context,
-                        ).textButtonTheme.style?.copyWith(
-                          foregroundColor: WidgetStateProperty.all(Colors.red),
-                          backgroundColor: WidgetStateProperty.all(
-                            Colors.red.shade50,
-                          ),
-                        ),
-                        onPressed: () => authController.cerrarSesion(),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.logout),
-                            10.ph,
-                            Text("Cerrar sesión"),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

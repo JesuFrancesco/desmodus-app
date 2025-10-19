@@ -193,6 +193,12 @@ public class MethodCallHandler implements MethodChannel.MethodCallHandler {
                 for (float[] obj : result) {
                     Map<String, Object> objectMap = new HashMap<>();
 
+                    System.out.println("Object raw: " + obj[0] + ", " + obj[1] + ", " + obj[2] + ", " + obj[3]);
+                    objectMap.put("predX", obj[0]);
+                    objectMap.put("predY", obj[1]);
+                    objectMap.put("predWidth", obj[2]);
+                    objectMap.put("predHeight", obj[3]);
+
                     float x = obj[0] * newWidth + offsetX;
                     float y = obj[1] * heightDp;
                     float width = obj[2] * newWidth;
@@ -330,6 +336,7 @@ public class MethodCallHandler implements MethodChannel.MethodCallHandler {
                     objectMap.put("y", y);
                     objectMap.put("width", width);
                     objectMap.put("height", height);
+                    
                     objectMap.put("confidence", confidence);
                     objectMap.put("index", index);
                     objectMap.put("label", label);

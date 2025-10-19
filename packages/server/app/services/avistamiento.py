@@ -70,9 +70,8 @@ def create_avist(session: Session, avist_data: AvistamientoCreate, file: UploadF
 
     except Exception as e:
         tb.print_exc()
-        logger.error("Error llamando a red tripleta: %s", e)
         eliminar_archivo(archivo, img_key)
-        raise HTTPException(status_code=500, detail="Error al llamar a servicio.")
+        raise HTTPException(status_code=500, detail=f"Algo salió mal: {e}")
 
     # Fase 3: Crear avistamiento
     avist = Avistamiento(**avist_data.model_dump(exclude={"id"}))

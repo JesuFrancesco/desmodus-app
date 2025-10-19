@@ -12,3 +12,11 @@
 ```sh
 flutter run --dart-define-from-file .env
 ```
+
+## Otros comandos
+
+### Generar DB local con Drift o mocks de testing
+
+```sh
+dart run build_runner build
+```
