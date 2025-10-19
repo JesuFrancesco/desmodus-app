@@ -8,7 +8,7 @@ class UserCreate(CamelModel):
     email: str
     phone: str
     dni: str
-    distrito_id: int | None = None
+    avatar_url: Optional[str] = None
 
 
 class UserUpdate(CamelModel):
@@ -16,9 +16,18 @@ class UserUpdate(CamelModel):
     email: Optional[str] = None
     phone: Optional[str] = None
     dni: Optional[str] = None
-    distrito_id: Optional[int] = None
+    distrito_id: Optional[str] = None
+    # TODO: add in model
+    document_type: Optional[str] = None
+    address: Optional[str] = None
+    centro_poblado: Optional[str] = None
+    referencia_centro: Optional[str] = None
 
 
 class UserResponse(UserCreate):
     id: int
-    distrito_id: Optional[int] = None
+    distrito_id: Optional[str] = None
+    document_type: Optional[str] = None
+    address: Optional[str] = None
+    centro_poblado: Optional[str] = None
+    referencia_centro: Optional[str] = None

@@ -17,7 +17,7 @@ from app.controllers.auth.providers import discord, google
 from app.controllers.auth import auth
 from app.log import get_logger
 
-logger = get_logger("root")
+logger = get_logger(__name__)
 
 
 @asynccontextmanager

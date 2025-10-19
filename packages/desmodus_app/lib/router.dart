@@ -1,10 +1,12 @@
-import 'package:desmodus_app/view/screens/home/home_screen.dart';
+import 'package:desmodus_app/view/screens/home/feed/feed_screen.dart';
 import 'package:desmodus_app/view/screens/detector/detector_screen.dart';
 import 'package:desmodus_app/view/screens/heatmap/heatmap_screen.dart';
+import 'package:desmodus_app/view/screens/home/home_screen.dart';
 import 'package:desmodus_app/view/screens/loading/loading_screen.dart'
     show LoadingScreen;
 import 'package:desmodus_app/view/screens/news_detail/news_detail_screen.dart';
 import 'package:desmodus_app/viewmodel/bindings/camera_bindings.dart';
+import 'package:desmodus_app/viewmodel/bindings/cuestionario_bindings.dart';
 import 'package:desmodus_app/viewmodel/bindings/home_bindings.dart';
 import 'package:desmodus_app/viewmodel/bindings/initial_bindings.dart';
 import 'package:get/get.dart';
@@ -37,13 +39,18 @@ GetMaterialApp getAppRouter(String firstScreen) {
       GetPage(
         name: '/home',
         page: () => const HomeScreen(),
+        children: [
+          GetPage(name: '/feed', page: () => const FeedScreen()),
+          GetPage(name: '/settings', page: () => const FeedScreen()),
+          GetPage(name: '/gallery', page: () => const FeedScreen()),
+        ],
         binding: HomeBindings(),
       ),
       GetPage(
         name: '/news-detail',
         page: () => const NewsDetailScreen(),
         binding: BindingsBuilder(() {
-          Get.lazyPut(() => NewsDetailController());
+          Get.lazyPut(() => DetalleNoticiaController());
         }),
       ),
       GetPage(
@@ -65,7 +72,11 @@ GetMaterialApp getAppRouter(String firstScreen) {
           Get.lazyPut(() => LocationController());
         }),
       ),
-      GetPage(name: '/cuestionario', page: () => const CuestionarioScreen()),
+      GetPage(
+        name: '/cuestionario',
+        page: () => const CuestionarioScreen(),
+        binding: CuestionarioBindings(),
+      ),
     ],
     initialBinding: InitialBindings(),
   );

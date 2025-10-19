@@ -1,7 +1,10 @@
+import 'dart:math';
+
+import 'package:desmodus_app/model/entity/noticia.dart';
+import 'package:desmodus_app/model/service/remote/noticia_service.dart';
 import 'package:desmodus_app/view/ui/theme/colors.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:desmodus_app/model/entity/news.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -35,7 +38,7 @@ class SightingMarker {
 
 class HomeController extends GetxController {
   // Lista observable de noticias
-  final RxList<News> newsList = <News>[].obs;
+  final RxList<Noticia> newsList = <Noticia>[].obs;
 
   // Índice actual del bottom navigation
   final RxInt currentIndex = 0.obs;
@@ -238,36 +241,10 @@ class HomeController extends GetxController {
   }
 
   // Cargar noticias
-  void loadNews() {
-    // Aquí irías a buscar las noticias desde tu servicio/repositorio
-    newsList.value = [
-      News(
-        id: '1',
-        title: 'Como reportar especies avistadas al SENASA',
-        description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce placerat nulla felis, ac efficitur dui faucibus consectetur. Nam',
-        imageUrl: 'https://www.cedepas.org.pe/sites/default/files/senasa2.png',
-        isUrgent: false,
-      ),
-      News(
-        id: '2',
-        title: 'Hábitat del murciélago vampiro',
-        description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce placerat nulla felis, ac efficitur dui faucibus consectetur. Nam',
-        imageUrl:
-            'https://media.es.wired.com/photos/6541313838775b6e711ea9e2/16:9/w_1920,c_limit/Vampire%20Bat_GettyImages-150370788.jpg',
-        isUrgent: false,
-      ),
-      News(
-        id: '3',
-        title: 'Brote de rabia en San Martín de Porres',
-        description:
-            'Se han confirmado 3 casos de rabia en animales domésticos. SENASA recomienda vacunación inmediata',
-        imageUrl:
-            'https://noticias-pe.laiglesiadejesucristo.org/media/960x540/SMP-distrito.jpg',
-        isUrgent: true,
-      ),
-    ];
+  void loadNews() async {
+    final service = NoticiaService();
+    final noticias = await service.obtenerNoticiasRecientes();
+    newsList.value = noticias;
 
     // Simular notificación de noticia urgente
     _checkForUrgentNews();
@@ -275,7 +252,9 @@ class HomeController extends GetxController {
 
   // Verificar noticias urgentes
   void _checkForUrgentNews() {
-    final urgentNews = newsList.where((news) => news.isUrgent).toList();
+    // TODO: noticia random por ahora
+    final rnd = Random();
+    final urgentNews = newsList.where((news) => rnd.nextBool()).toList();
 
     for (var news in urgentNews) {
       _sendUrgentNewsNotification(news);
@@ -283,7 +262,7 @@ class HomeController extends GetxController {
   }
 
   // Enviar notificación de noticia urgente
-  void _sendUrgentNewsNotification(News news) async {
+  void _sendUrgentNewsNotification(Noticia news) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
           'urgent_news',
@@ -302,7 +281,7 @@ class HomeController extends GetxController {
     await flutterLocalNotificationsPlugin.show(
       news.id.hashCode,
       '🚨 ${news.title}',
-      news.description,
+      news.content,
       platformChannelSpecifics,
     );
   }
@@ -338,7 +317,7 @@ class HomeController extends GetxController {
   }
 
   // Compartir noticia
-  void shareNews(News news) {
+  void shareNews(Noticia news) {
     // Aquí implementarías la lógica para compartir
     Get.snackbar(
       'Compartir',
@@ -348,27 +327,13 @@ class HomeController extends GetxController {
   }
 
   // Navegar al detalle de la noticia
-  void navigateToNewsDetail(News news) {
+  void navigateToNewsDetail(Noticia news) {
     Get.toNamed('/news-detail', arguments: news);
   }
 
   // Manejar tap en el bottom navigation
   void onBottomNavTap(int index) {
     currentIndex.value = index;
-
-    switch (index) {
-      case 0:
-        // Ya estamos en home
-        break;
-      case 1:
-        // Get.toNamed('/settings');
-        Get.snackbar(
-          'Navegación',
-          'Ir a ajustes',
-          snackPosition: SnackPosition.TOP,
-        );
-        break;
-    }
   }
 
   @override

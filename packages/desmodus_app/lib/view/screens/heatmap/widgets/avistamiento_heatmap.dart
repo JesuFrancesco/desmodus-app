@@ -1,12 +1,13 @@
+import 'package:desmodus_app/model/mapper/sighting_avist_mapper.dart';
 import 'package:desmodus_app/utils/padding_extensions.dart';
+import 'package:desmodus_app/view/screens/home/gallery/gallery_item/gallery_item_screen.dart';
+import 'package:desmodus_app/viewmodel/controllers/location_controller.dart';
+import 'package:desmodus_app/viewmodel/controllers/sightings/remote_sightings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_heatmap/flutter_map_heatmap.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:desmodus_app/config.dart';
-import 'package:desmodus_app/viewmodel/controllers/location_controller.dart';
-import 'package:desmodus_app/viewmodel/controllers/sightings/remote_sightings_controller.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AvistamientoHeatmap extends StatelessWidget {
@@ -21,96 +22,112 @@ class AvistamientoHeatmap extends StatelessWidget {
     void showUserSnackbar() => ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('¡Eres tú!'),
-        action: SnackBarAction(
-          label: 'Okay',
-          onPressed: () {
-            // Some code to undo the change.
-          },
-        ),
+        action: SnackBarAction(label: 'Okay', onPressed: () {}),
       ),
     );
 
     return Obx(
-      () => !locationController.hasPermission.value
-          ? DeniedLocationPermissionWidget()
-          // : avistController.isLoading.value
-          // ? const Center(child: CircularProgressIndicator())
-          : FlutterMap(
-              key: locationController.mapKey,
-              mapController: locationController.mapController,
-              options: MapOptions(
-                initialZoom: 12.5,
-                minZoom: 5,
-                initialCenter: LatLng(
-                  locationController.latitud.value,
-                  locationController.longitud.value,
+      () =>
+          !locationController.hasPermission.value
+              ? DeniedLocationPermissionWidget()
+              : avistController.isLoading.value
+              ? const Center(child: CircularProgressIndicator())
+              : FlutterMap(
+                key: locationController.mapKey,
+                mapController: locationController.mapController,
+                options: MapOptions(
+                  initialZoom: 12.5,
+                  minZoom: 5,
+                  initialCenter: LatLng(
+                    locationController.latitud.value,
+                    locationController.longitud.value,
+                  ),
                 ),
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate:
-                      "https://tile.jawg.io/jawg-terrain/{z}/{x}/{y}.png?access-token=${Config.jawgAccessToken}",
-                  // urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                  userAgentPackageName: "github.jesufrancesco.desmodus_app",
-                ),
-                Obx(() {
-                  if (avistController.allAvistamientos.isEmpty) {
-                    return const SizedBox();
-                  }
-                  final avistamientoData = InMemoryHeatMapDataSource(
-                    data: avistController.allAvistamientos
-                        .map(
-                          (e) => WeightedLatLng(
-                            LatLng(e.latitud, e.longitud),
-                            5e1, // 50 avistamientos de peso
-                          ),
-                        )
-                        .toList(),
-                  );
-                  return HeatMapLayer(
-                    heatMapOptions: HeatMapOptions(
-                      radius: 1e2, // 100 metros
+                children: [
+                  // ======================
+                  // OSM map tile
+                  // ======================
+                  Obx(
+                    () => TileLayer(
+                      urlTemplate: locationController.mapTileUrl.value,
+                      userAgentPackageName:
+                          "github.jesufrancesco.lissachatina_app",
                     ),
-                    heatMapDataSource: avistamientoData,
-                  );
-                }),
-                Obx(() {
-                  final lat = locationController.latitud.value;
-                  final lng = locationController.longitud.value;
-                  final allAvist = avistController.allAvistamientos;
-                  return MarkerLayer(
-                    markers: [
-                      Marker(
-                        point: LatLng(lat, lng),
-                        child: GestureDetector(
-                          onTap: showUserSnackbar,
-                          child: const Icon(
-                            Icons.location_pin,
-                            size: 32,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      ...allAvist.map(
-                        (e) => Marker(
-                          point: LatLng(e.latitud, e.longitud),
+                  ),
+                  // ====================
+                  // Heatmap layer
+                  // ====================
+                  Obx(
+                    () =>
+                        avistController.allAvistamientos.isEmpty
+                            ? SizedBox.shrink()
+                            : HeatMapLayer(
+                              heatMapOptions: HeatMapOptions(
+                                radius:
+                                    locationController
+                                        .heatmapRadius
+                                        .value, // 50 metros
+                              ),
+                              heatMapDataSource: InMemoryHeatMapDataSource(
+                                data:
+                                    avistController.allAvistamientos
+                                        .map(
+                                          (e) => WeightedLatLng(
+                                            LatLng(e.latitud, e.longitud),
+                                            3e1, // 30 avistamientos de peso
+                                          ),
+                                        )
+                                        .toList(),
+                              ),
+                            ),
+                  ),
+                  // ============================
+                  // Avistamiento Markers layer
+                  // ============================
+                  Obx(() {
+                    final lat = locationController.latitud.value;
+                    final lng = locationController.longitud.value;
+                    final allAvist = avistController.allAvistamientos;
+                    return MarkerLayer(
+                      markers: [
+                        Marker(
+                          point: LatLng(lat, lng),
                           child: GestureDetector(
-                            onTap: () =>
-                                Get.snackbar("Avistamiento onTap", "Okay"),
-                            child: Icon(
-                              Icons.warning,
-                              size: 20,
-                              color: Colors.red,
+                            onTap: showUserSnackbar,
+                            child: const Icon(
+                              Icons.location_pin,
+                              size: 32,
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                }),
-                ...additionalStackWidgets,
-              ],
-            ),
+                        ...allAvist.map(
+                          (e) => Marker(
+                            point: LatLng(e.latitud, e.longitud),
+                            child: GestureDetector(
+                              onTap: () {
+                                final mapper = SightingAvistMapper();
+                                Get.to(
+                                  GalleryItemScreen(
+                                    gallerySighting: mapper
+                                        .avistamientoToGallerySighting(e),
+                                  ),
+                                );
+                              },
+                              child: Icon(
+                                Icons.warning,
+                                size: 20,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+                  ...additionalStackWidgets,
+                ],
+              ),
     );
   }
 }

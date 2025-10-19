@@ -1,3 +1,5 @@
+import 'package:desmodus_app/config.dart';
+import 'package:desmodus_app/viewmodel/controllers/sightings/remote_sightings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
@@ -13,6 +15,12 @@ class LocationController extends GetxController {
   final isLoading = true.obs;
   final hasPermission = false.obs;
 
+  final mapTileUrl =
+      Config.jawgAccessToken == "UNDEFINED"
+          ? "https://tile.openstreetmap.org/{z}/{x}/{y}.png".obs
+          : "https://tile.jawg.io/jawg-terrain/{z}/{x}/{y}.png?access-token=${Config.jawgAccessToken}"
+              .obs;
+  final heatmapRadius = 50.0.obs;
   final latitud = 0.0.obs;
   final longitud = 0.0.obs;
 
@@ -22,7 +30,6 @@ class LocationController extends GetxController {
     isLoading.value = true;
     try {
       await checkPermisoDeUbicacion();
-
       await _escucharEventosLocator();
     } catch (e) {
       print("Algo salió mal al inicializar el controlador de ubicación: $e");
@@ -78,6 +85,18 @@ class LocationController extends GetxController {
     });
   }
 
+  Future<Map<String, double>> obtenerUbicacionActual() async {
+    try {
+      final locationData = await locacionGPS.getLocation();
+      latitud.value = locationData.latitude!;
+      longitud.value = locationData.longitude!;
+      return {"latitud": latitud.value, "longitud": longitud.value};
+    } catch (e) {
+      debugPrint("Error al obtener la ubicación: $e");
+      return {"latitud": 0.0, "longitud": 0.0};
+    }
+  }
+
   Future<void> abrirMapa() async {
     Get.toNamed(
       "/heatmap",
@@ -112,5 +131,31 @@ class LocationController extends GetxController {
         ],
       ),
     );
+  }
+
+  Future<void> _forceRefreshHeatmapLayer() async {
+    final avistController = Get.find<RemoteSightingsController>();
+
+    // ignore: invalid_use_of_protected_member
+    final currentMapTileResource = avistController.allAvistamientos.value;
+
+    // Clear the list and then reassign it to force the heatmap layer to refresh
+    avistController.allAvistamientos.value = [];
+    await Future.delayed(Duration(milliseconds: 10));
+    avistController.allAvistamientos.value = currentMapTileResource;
+  }
+
+  void increaseRadius() {
+    if (heatmapRadius.value < 1e4) {
+      heatmapRadius.value += 10;
+    }
+    _forceRefreshHeatmapLayer();
+  }
+
+  void decreaseRadius() {
+    if (heatmapRadius.value > 10) {
+      heatmapRadius.value -= 10;
+    }
+    _forceRefreshHeatmapLayer();
   }
 }

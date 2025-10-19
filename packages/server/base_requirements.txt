@@ -9,5 +9,4 @@ PyJWT
 pytest
 requests
 sqlmodel
-supabase
-supafunc
+azure-storage-blob

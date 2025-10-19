@@ -7,9 +7,16 @@ from app.schemas.archivos import ArchivosResponse
 
 
 class AvistamientoCreate(CamelModel):
+    description: str
+    
     longitud: Decimal
     latitud: Decimal
-    description: str
+
+    x: Decimal | None = None
+    y: Decimal | None = None
+    w: Decimal | None = None
+    h: Decimal | None = None
+
     user_id: int | None = None
     departamento_id: str | None = None
     archivo: Optional[ArchivosResponse] = None

@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ultralytics_yolo/camera_preview/ultralytics_yolo_camera_controller.dart'
     show UltralyticsYoloCameraController;
-import 'package:ultralytics_yolo/camera_preview/ultralytics_yolo_camera_preview.dart';
+import 'package:ultralytics_yolo/camera_preview/ultralytics_yolo_camera_screen.dart';
 import 'package:ultralytics_yolo/predict/detect/object_detector.dart'
     show ObjectDetector;
 
@@ -189,9 +189,7 @@ class DetectorScreen extends StatelessWidget {
                             Obx(
                               () => Container(
                                 width:
-                                    (clientSightingsController
-                                                .inferencedTimes
-                                                .value /
+                                    (clientSightingsController.predCombo.value /
                                             30)
                                         .clamp(0.0, 1.0) *
                                     MediaQuery.of(context).size.width,

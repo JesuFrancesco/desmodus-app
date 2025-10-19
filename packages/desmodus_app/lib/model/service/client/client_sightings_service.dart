@@ -6,13 +6,21 @@ import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
 
 class ClientSightingsService {
-  Future<List<Sighting>> fetchClientSights() async {
+  Future<List<Sighting>> obtenerAvistamientos() async {
     final db = AppDatabase.instance();
     return (db.select(db.sightings)
       ..orderBy([(t) => OrderingTerm.desc(t.date)])).get();
   }
 
-  Future<Sighting?> insertarAvistamiento(SightingsCompanion sighting) async {
+  Future<Sighting?> obtenerAvistamientoPorId(int id) async {
+    final db = AppDatabase.instance();
+    return (db.select(db.sightings)
+          ..where((t) => t.id.equals(id))
+          ..orderBy([(t) => OrderingTerm.desc(t.date)]))
+        .getSingleOrNull();
+  }
+
+  Future<Sighting?> insertarSighting(SightingsCompanion sighting) async {
     try {
       final db = AppDatabase.instance();
       final id = await db.into(db.sightings).insert(sighting);
@@ -24,6 +32,10 @@ class ClientSightingsService {
         imagePath: sighting.imagePath.value,
         date: sighting.date.value,
         userId: sighting.userId.value,
+        x: sighting.x.value,
+        y: sighting.y.value,
+        w: sighting.w.value,
+        h: sighting.h.value,
       );
     } on Exception {
       return null;
@@ -44,6 +56,19 @@ class ClientSightingsService {
 
       if (await file.exists()) {
         await file.delete();
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> eliminarAvistamientoPorId(int id) async {
+    try {
+      final a = await obtenerAvistamientoPorId(id);
+      if (a != null) {
+        await eliminarAvistamiento(a);
       }
 
       return true;

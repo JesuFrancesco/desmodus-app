@@ -12,8 +12,10 @@ from app.schemas.avistamiento import (
 from app.database import get_session
 from app.services.avistamiento import (
     create_avist,
+    delete_user_avist,
     get_all_avist,
     get_one_avist,
+    get_paged_avist,
     get_user_avist,
     update_one_avist,
 )
@@ -38,11 +40,18 @@ def create_avist_endpoint(
 
 @router.get("/", response_model=List[AvistamientoResponse])
 def get_all_avists_endpoint(
+    session: Session = Depends(get_session),
+):
+    return get_all_avist(session=session)
+
+
+@router.get("/paged", response_model=List[AvistamientoResponse])
+def get_paged_avists_endpoint(
     offset: int = Query(0, description="Offset for pagination"),
     limit: int = Query(50, description="Limit for pagination"),
     session: Session = Depends(get_session),
 ):
-    return get_all_avist(session=session, offset=offset, limit=limit)
+    return get_paged_avist(session=session, offset=offset, limit=limit)
 
 
 @router.get("/user", response_model=List[AvistamientoResponse])
@@ -51,6 +60,15 @@ def get_user_avists_endpoint(
     session: Session = Depends(get_session),
 ):
     return get_user_avist(session=session, user_id=payload["id"])
+
+
+@router.delete("/user/{avist_id}", response_model=List[AvistamientoResponse])
+def delete_user_avist_endpoint(
+    avist_id: int,
+    payload: dict = Depends(validate_token),
+    session: Session = Depends(get_session),
+):
+    return delete_user_avist(session=session, user_id=payload["id"], avist_id=avist_id)
 
 
 @router.get("/{avist_id}", response_model=AvistamientoResponse)

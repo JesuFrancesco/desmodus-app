@@ -33,6 +33,6 @@ def get_departamentos_endpoint(session: Session = Depends(get_session)):
 
 @router.get("/{departamento_id}", response_model=DepartamentoResponse)
 def get_departamento_endpoint(
-    departamento_id: int, session: Session = Depends(get_session)
+    departamento_id: str, session: Session = Depends(get_session)
 ):
     return get_one_departamento(session, departamento_id)

@@ -7,6 +7,8 @@ def get_all_provincias(session: Session):
     provincia = session.exec(select(Provincia)).all()
     return provincia
 
+def get_provincias_by_departamento(session: Session, departamento_id: int):
+    return session.exec(select(Provincia).where(Provincia.departamento_id == departamento_id)).all()
 
 def get_one_provincia(session: Session, provincia_id: int):
     return session.get(Provincia, provincia_id)

@@ -59,7 +59,7 @@ async def auth_callback(
             "grant_type": "authorization_code",
             "code": code,
             "redirect_uri": DISCORD_CALLBACK_URL,
-            "scope": "identify email",
+            "scope": "email+identify",
         }
         token_res = await client.post(
             TOKEN_URL,
@@ -88,12 +88,17 @@ async def auth_callback(
     ).first()
 
     if not existing_user:
+        avatar_url = (
+            f"https://cdn.discordapp.com/avatars/{user_info['id']}/{user_info.get('avatar')}.png"
+            if user_info.get("avatar")
+            else ""
+        )
         new_user = Users(
             name=user_info["username"],
             email=user_info["email"],
-            avatar_url=user_info.get("avatar", ""),
             phone="",
             dni="",
+            avatar_url=avatar_url,
             distrito_id=None,
         )
         session.add(new_user)
@@ -121,14 +126,14 @@ async def auth_callback(
         value=jWebToken,
         httponly=True,
         secure=False,
-        samesite="Lax",
+        samesite="lax",
     )
 
     return {"ok": True}
 
 
 @router.get(
-    "/callback-android", summary="Callback que redirige con DeepLink a Desmodus App"
+    "/callback-android", summary="Callback que redirige con DeepLink a Lissachatina App"
 )
 async def auth_callback_android(
     code: str, response: Response, session: Session = Depends(get_session)
@@ -141,7 +146,7 @@ async def auth_callback_android(
             "grant_type": "authorization_code",
             "code": code,
             "redirect_uri": DISCORD_CALLBACK_URL,
-            "scope": "identify email",
+            "scope": "email+identify",
         }
 
         token_res = await client.post(
@@ -166,7 +171,6 @@ async def auth_callback_android(
             USERINFO_URL, headers={"Authorization": f"Bearer {access_token}"}
         )
         user_info = user_res.json()
-        print("User Info:", user_info)
 
     # 2. Check if the user exists in the database
     existing_user = session.exec(
@@ -175,16 +179,16 @@ async def auth_callback_android(
 
     if not existing_user:
         avatar_url = (
-            f'https://cdn.discordapp.com/avatars/{user_info["id"]}/{user_info.get("avatar")}.png'
+            f"https://cdn.discordapp.com/avatars/{user_info['id']}/{user_info.get('avatar')}.png"
             if user_info.get("avatar")
             else ""
         )
         new_user = Users(
             name=user_info["username"],
             email=user_info["email"],
-            avatar_url=avatar_url,
             phone="",
             dni="",
+            avatar_url=avatar_url,
             distrito_id=None,
         )
         session.add(new_user)
@@ -195,7 +199,7 @@ async def auth_callback_android(
         existing_user.name = user_info["username"]
         existing_user.email = user_info["email"]
         existing_user.avatar_url = (
-            f'https://cdn.discordapp.com/avatars/{user_info["id"]}/{user_info.get("avatar")}.png'
+            f"https://cdn.discordapp.com/avatars/{user_info['id']}/{user_info.get('avatar')}.png"
             if user_info.get("avatar")
             else existing_user.avatar_url
         )
@@ -207,6 +211,8 @@ async def auth_callback_android(
         {
             "id": existing_user.id,
             "sub": user_info["email"],
+            # TODO: implement roles
+            # "role": user_info.get("role", "user"),
             "role": "user",
         }
     )
@@ -216,12 +222,12 @@ async def auth_callback_android(
         value=jWebToken,
         httponly=True,
         secure=False,
-        samesite="Lax",
+        samesite="lax",
     )
 
     response.headers["Content-Type"] = "text/plain"
     response.headers["Location"] = (
-        f"github.jesufrancesco.desmodus-app://main/auth-callback?jwt={jWebToken}"
+        f"github.jesufrancesco.lissachatina-app://main/auth-callback?jwt={jWebToken}"
     )
     response.status_code = 302
     response.body = b"Redirecting..."

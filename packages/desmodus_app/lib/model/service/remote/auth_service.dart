@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:desmodus_app/model/entity/user.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:desmodus_app/config.dart';
@@ -80,5 +82,30 @@ class AuthService {
     }
 
     throw Exception("Algo salió mal. Código: ${response.statusCode}");
+  }
+
+  Future<User> getUserData(String jwt) async {
+    final uri = Uri.parse("${Config.apiUrl}/users/current");
+
+    final response = await http.get(
+      uri,
+      headers: {
+        "Content-Type": "application/json",
+        "Cookie": "access_token=$jwt",
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Algo salió mal ${response.statusCode}");
+    }
+
+    final data = jsonDecode(response.body);
+
+    final user = User.fromJson(data);
+    debugPrint(
+      "👨 Datos del usuario: ${user.toJson()}, isComplete: ${user.isComplete()}",
+    );
+
+    return user;
   }
 }

@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
-from app.crypto.middleware import validate_token
+from app.crypto.middleware import validate_admin_token, validate_token
 
 from app.database import get_session
 from app.schemas.users import UserCreate, UserResponse, UserUpdate
@@ -11,12 +11,18 @@ router = APIRouter()
 
 
 @router.post("/", response_model=UserResponse)
-def create_users_endpoint(user: UserCreate, session: Session = Depends(get_session)):
+def create_users_endpoint(
+    user: UserCreate,
+    _=Depends(validate_admin_token),
+    session: Session = Depends(get_session),
+):
     return create_user(session, user)
 
 
 @router.get("/", response_model=List[UserResponse])
-def get_users_endpoint(session: Session = Depends(get_session)):
+def get_users_endpoint(
+    _=Depends(validate_admin_token), session: Session = Depends(get_session)
+):
     return get_all_users(session)
 
 
@@ -28,13 +34,20 @@ def get_current_user(
     return get_one_user(session, id)
 
 
-@router.get("/{user_id}", response_model=UserResponse)
-def get_user_endpoint(user_id: int, session: Session = Depends(get_session)):
-    return get_one_user(session, user_id)
-
-
-@router.patch("/{user_id}", response_model=UserResponse)
+@router.patch("/current", response_model=UserResponse)
 def patch_user_endpoint(
-    user_id: int, user: UserUpdate, session: Session = Depends(get_session)
+    user: UserUpdate,
+    payload=Depends(validate_token),
+    session: Session = Depends(get_session),
 ):
+    user_id = payload.get("id")
     return update_one_user(session, user, user_id)
+
+
+@router.get("/{user_id}", response_model=UserResponse)
+def get_user_endpoint(
+    user_id: int,
+    _=Depends(validate_admin_token),
+    session: Session = Depends(get_session),
+):
+    return get_one_user(session, user_id)

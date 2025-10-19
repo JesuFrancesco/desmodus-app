@@ -1,33 +1,47 @@
-import 'archivo.dart';
+import 'package:desmodus_app/model/entity/archivo.dart';
 
-class Avist {
-  final int? id;
-  final String? description;
-  final Archivo? archivo;
+class Avistamiento {
+  final int id;
+  final String description;
   final double longitud;
   final double latitud;
+
+  final double? x;
+  final double? y;
+  final double? w;
+  final double? h;
+
+  final Archivo? archivo;
   final DateTime detectedAt;
 
   final String departamentoId;
   final int userId;
 
-  Avist({
-    this.id,
+  Avistamiento({
+    required this.id,
+    required this.description,
     required this.longitud,
     required this.latitud,
+    this.x,
+    this.y,
+    this.w,
+    this.h,
     required this.detectedAt,
     required this.archivo,
     required this.userId,
     required this.departamentoId,
-    this.description,
   });
 
-  factory Avist.fromJson(Map<String, dynamic> json) {
-    return Avist(
+  factory Avistamiento.fromJson(Map<String, dynamic> json) {
+    return Avistamiento(
       id: json['id'],
+      description: json['description'],
       longitud: double.parse(json['longitud'].toString()),
       latitud: double.parse(json['latitud'].toString()),
-      description: json['description'],
+      x: json['x'] != null ? double.parse(json['x'].toString()) : null,
+      y: json['y'] != null ? double.parse(json['y'].toString()) : null,
+      w: json['w'] != null ? double.parse(json['w'].toString()) : null,
+      h: json['h'] != null ? double.parse(json['h'].toString()) : null,
       userId: json['userId'],
       departamentoId: json['departamentoId'],
       archivo:
@@ -39,9 +53,13 @@ class Avist {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'description': description,
       'longitud': longitud,
       'latitud': latitud,
-      'description': description,
+      'x': x,
+      'y': y,
+      'w': w,
+      'h': h,
       'userId': userId,
       'departamentoId': departamentoId,
       'archivo': archivo?.toJson(),

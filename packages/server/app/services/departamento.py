@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from sqlmodel import Session, func, select, col
+from sqlmodel import Session, func, select
 
 from app.models.ubigeos import Departamento
 
@@ -17,8 +17,8 @@ def get_all_departamentos_by_ranking(session: Session):
             Departamento.thumbnail_url,
             func.count().label("total_avistamientos"),
         )
-        .join(Departamento.avistamientos)
-        .group_by(Departamento.id, Departamento.nombre, Departamento.thumbnail_url)
+        .join(Departamento.avistamientos)  # type: ignore
+        .group_by(Departamento.id, Departamento.nombre, Departamento.thumbnail_url)  # type: ignore
         .order_by(func.count().desc())
     )
     result = session.exec(query).all()
@@ -34,9 +34,16 @@ def get_all_departamentos_by_ranking(session: Session):
 
 
 def get_a_departamento_by_name(session: Session, name: str):
-    departamento = session.exec(
-        select(Departamento).where(col(Departamento.nombre).regexp_match(name, "i"))
-    ).first()
+    # Normalize input
+    normalized_name = name.strip().lower()
+
+    # Compare using unaccent + lower
+    stmt = select(Departamento).where(
+        func.lower(func.unaccent(Departamento.nombre))
+        == func.lower(func.unaccent(normalized_name))
+    )
+
+    departamento = session.exec(stmt).first()
 
     if not departamento:
         raise HTTPException(

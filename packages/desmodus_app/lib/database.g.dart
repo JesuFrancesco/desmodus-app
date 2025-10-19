@@ -66,6 +66,42 @@ class $SightingsTable extends Sightings
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  @override
+  late final GeneratedColumn<double> x = GeneratedColumn<double>(
+    'x',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  @override
+  late final GeneratedColumn<double> y = GeneratedColumn<double>(
+    'y',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _wMeta = const VerificationMeta('w');
+  @override
+  late final GeneratedColumn<double> w = GeneratedColumn<double>(
+    'w',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hMeta = const VerificationMeta('h');
+  @override
+  late final GeneratedColumn<double> h = GeneratedColumn<double>(
+    'h',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -92,6 +128,10 @@ class $SightingsTable extends Sightings
     longitude,
     description,
     imagePath,
+    x,
+    y,
+    w,
+    h,
     date,
     userId,
   ];
@@ -143,6 +183,18 @@ class $SightingsTable extends Sightings
         imagePath.isAcceptableOrUnknown(data['image_path']!, _imagePathMeta),
       );
     }
+    if (data.containsKey('x')) {
+      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
+    }
+    if (data.containsKey('y')) {
+      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    }
+    if (data.containsKey('w')) {
+      context.handle(_wMeta, w.isAcceptableOrUnknown(data['w']!, _wMeta));
+    }
+    if (data.containsKey('h')) {
+      context.handle(_hMeta, h.isAcceptableOrUnknown(data['h']!, _hMeta));
+    }
     if (data.containsKey('date')) {
       context.handle(
         _dateMeta,
@@ -190,6 +242,22 @@ class $SightingsTable extends Sightings
         DriftSqlType.string,
         data['${effectivePrefix}image_path'],
       ),
+      x: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}x'],
+      ),
+      y: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}y'],
+      ),
+      w: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}w'],
+      ),
+      h: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}h'],
+      ),
       date:
           attachedDatabase.typeMapping.read(
             DriftSqlType.dateTime,
@@ -215,6 +283,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
   final double longitude;
   final String description;
   final String? imagePath;
+  final double? x;
+  final double? y;
+  final double? w;
+  final double? h;
   final DateTime date;
   final int userId;
   const Sighting({
@@ -223,6 +295,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
     required this.longitude,
     required this.description,
     this.imagePath,
+    this.x,
+    this.y,
+    this.w,
+    this.h,
     required this.date,
     required this.userId,
   });
@@ -235,6 +311,18 @@ class Sighting extends DataClass implements Insertable<Sighting> {
     map['description'] = Variable<String>(description);
     if (!nullToAbsent || imagePath != null) {
       map['image_path'] = Variable<String>(imagePath);
+    }
+    if (!nullToAbsent || x != null) {
+      map['x'] = Variable<double>(x);
+    }
+    if (!nullToAbsent || y != null) {
+      map['y'] = Variable<double>(y);
+    }
+    if (!nullToAbsent || w != null) {
+      map['w'] = Variable<double>(w);
+    }
+    if (!nullToAbsent || h != null) {
+      map['h'] = Variable<double>(h);
     }
     map['date'] = Variable<DateTime>(date);
     map['user_id'] = Variable<int>(userId);
@@ -251,6 +339,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
           imagePath == null && nullToAbsent
               ? const Value.absent()
               : Value(imagePath),
+      x: x == null && nullToAbsent ? const Value.absent() : Value(x),
+      y: y == null && nullToAbsent ? const Value.absent() : Value(y),
+      w: w == null && nullToAbsent ? const Value.absent() : Value(w),
+      h: h == null && nullToAbsent ? const Value.absent() : Value(h),
       date: Value(date),
       userId: Value(userId),
     );
@@ -267,6 +359,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
       longitude: serializer.fromJson<double>(json['longitude']),
       description: serializer.fromJson<String>(json['description']),
       imagePath: serializer.fromJson<String?>(json['imagePath']),
+      x: serializer.fromJson<double?>(json['x']),
+      y: serializer.fromJson<double?>(json['y']),
+      w: serializer.fromJson<double?>(json['w']),
+      h: serializer.fromJson<double?>(json['h']),
       date: serializer.fromJson<DateTime>(json['date']),
       userId: serializer.fromJson<int>(json['userId']),
     );
@@ -280,6 +376,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
       'longitude': serializer.toJson<double>(longitude),
       'description': serializer.toJson<String>(description),
       'imagePath': serializer.toJson<String?>(imagePath),
+      'x': serializer.toJson<double?>(x),
+      'y': serializer.toJson<double?>(y),
+      'w': serializer.toJson<double?>(w),
+      'h': serializer.toJson<double?>(h),
       'date': serializer.toJson<DateTime>(date),
       'userId': serializer.toJson<int>(userId),
     };
@@ -291,6 +391,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
     double? longitude,
     String? description,
     Value<String?> imagePath = const Value.absent(),
+    Value<double?> x = const Value.absent(),
+    Value<double?> y = const Value.absent(),
+    Value<double?> w = const Value.absent(),
+    Value<double?> h = const Value.absent(),
     DateTime? date,
     int? userId,
   }) => Sighting(
@@ -299,6 +403,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
     longitude: longitude ?? this.longitude,
     description: description ?? this.description,
     imagePath: imagePath.present ? imagePath.value : this.imagePath,
+    x: x.present ? x.value : this.x,
+    y: y.present ? y.value : this.y,
+    w: w.present ? w.value : this.w,
+    h: h.present ? h.value : this.h,
     date: date ?? this.date,
     userId: userId ?? this.userId,
   );
@@ -310,6 +418,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
       description:
           data.description.present ? data.description.value : this.description,
       imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
+      x: data.x.present ? data.x.value : this.x,
+      y: data.y.present ? data.y.value : this.y,
+      w: data.w.present ? data.w.value : this.w,
+      h: data.h.present ? data.h.value : this.h,
       date: data.date.present ? data.date.value : this.date,
       userId: data.userId.present ? data.userId.value : this.userId,
     );
@@ -323,6 +435,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
           ..write('longitude: $longitude, ')
           ..write('description: $description, ')
           ..write('imagePath: $imagePath, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('w: $w, ')
+          ..write('h: $h, ')
           ..write('date: $date, ')
           ..write('userId: $userId')
           ..write(')'))
@@ -336,6 +452,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
     longitude,
     description,
     imagePath,
+    x,
+    y,
+    w,
+    h,
     date,
     userId,
   );
@@ -348,6 +468,10 @@ class Sighting extends DataClass implements Insertable<Sighting> {
           other.longitude == this.longitude &&
           other.description == this.description &&
           other.imagePath == this.imagePath &&
+          other.x == this.x &&
+          other.y == this.y &&
+          other.w == this.w &&
+          other.h == this.h &&
           other.date == this.date &&
           other.userId == this.userId);
 }
@@ -358,6 +482,10 @@ class SightingsCompanion extends UpdateCompanion<Sighting> {
   final Value<double> longitude;
   final Value<String> description;
   final Value<String?> imagePath;
+  final Value<double?> x;
+  final Value<double?> y;
+  final Value<double?> w;
+  final Value<double?> h;
   final Value<DateTime> date;
   final Value<int> userId;
   const SightingsCompanion({
@@ -366,6 +494,10 @@ class SightingsCompanion extends UpdateCompanion<Sighting> {
     this.longitude = const Value.absent(),
     this.description = const Value.absent(),
     this.imagePath = const Value.absent(),
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
+    this.w = const Value.absent(),
+    this.h = const Value.absent(),
     this.date = const Value.absent(),
     this.userId = const Value.absent(),
   });
@@ -375,6 +507,10 @@ class SightingsCompanion extends UpdateCompanion<Sighting> {
     required double longitude,
     required String description,
     this.imagePath = const Value.absent(),
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
+    this.w = const Value.absent(),
+    this.h = const Value.absent(),
     this.date = const Value.absent(),
     required int userId,
   }) : latitude = Value(latitude),
@@ -387,6 +523,10 @@ class SightingsCompanion extends UpdateCompanion<Sighting> {
     Expression<double>? longitude,
     Expression<String>? description,
     Expression<String>? imagePath,
+    Expression<double>? x,
+    Expression<double>? y,
+    Expression<double>? w,
+    Expression<double>? h,
     Expression<DateTime>? date,
     Expression<int>? userId,
   }) {
@@ -396,6 +536,10 @@ class SightingsCompanion extends UpdateCompanion<Sighting> {
       if (longitude != null) 'longitude': longitude,
       if (description != null) 'description': description,
       if (imagePath != null) 'image_path': imagePath,
+      if (x != null) 'x': x,
+      if (y != null) 'y': y,
+      if (w != null) 'w': w,
+      if (h != null) 'h': h,
       if (date != null) 'date': date,
       if (userId != null) 'user_id': userId,
     });
@@ -407,6 +551,10 @@ class SightingsCompanion extends UpdateCompanion<Sighting> {
     Value<double>? longitude,
     Value<String>? description,
     Value<String?>? imagePath,
+    Value<double?>? x,
+    Value<double?>? y,
+    Value<double?>? w,
+    Value<double?>? h,
     Value<DateTime>? date,
     Value<int>? userId,
   }) {
@@ -416,6 +564,10 @@ class SightingsCompanion extends UpdateCompanion<Sighting> {
       longitude: longitude ?? this.longitude,
       description: description ?? this.description,
       imagePath: imagePath ?? this.imagePath,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      w: w ?? this.w,
+      h: h ?? this.h,
       date: date ?? this.date,
       userId: userId ?? this.userId,
     );
@@ -439,6 +591,18 @@ class SightingsCompanion extends UpdateCompanion<Sighting> {
     if (imagePath.present) {
       map['image_path'] = Variable<String>(imagePath.value);
     }
+    if (x.present) {
+      map['x'] = Variable<double>(x.value);
+    }
+    if (y.present) {
+      map['y'] = Variable<double>(y.value);
+    }
+    if (w.present) {
+      map['w'] = Variable<double>(w.value);
+    }
+    if (h.present) {
+      map['h'] = Variable<double>(h.value);
+    }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
@@ -456,6 +620,10 @@ class SightingsCompanion extends UpdateCompanion<Sighting> {
           ..write('longitude: $longitude, ')
           ..write('description: $description, ')
           ..write('imagePath: $imagePath, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('w: $w, ')
+          ..write('h: $h, ')
           ..write('date: $date, ')
           ..write('userId: $userId')
           ..write(')'))
@@ -481,6 +649,10 @@ typedef $$SightingsTableCreateCompanionBuilder =
       required double longitude,
       required String description,
       Value<String?> imagePath,
+      Value<double?> x,
+      Value<double?> y,
+      Value<double?> w,
+      Value<double?> h,
       Value<DateTime> date,
       required int userId,
     });
@@ -491,6 +663,10 @@ typedef $$SightingsTableUpdateCompanionBuilder =
       Value<double> longitude,
       Value<String> description,
       Value<String?> imagePath,
+      Value<double?> x,
+      Value<double?> y,
+      Value<double?> w,
+      Value<double?> h,
       Value<DateTime> date,
       Value<int> userId,
     });
@@ -526,6 +702,26 @@ class $$SightingsTableFilterComposer
 
   ColumnFilters<String> get imagePath => $composableBuilder(
     column: $table.imagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get x => $composableBuilder(
+    column: $table.x,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get y => $composableBuilder(
+    column: $table.y,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get w => $composableBuilder(
+    column: $table.w,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get h => $composableBuilder(
+    column: $table.h,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -574,6 +770,26 @@ class $$SightingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get x => $composableBuilder(
+    column: $table.x,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get y => $composableBuilder(
+    column: $table.y,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get w => $composableBuilder(
+    column: $table.w,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get h => $composableBuilder(
+    column: $table.h,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnOrderings(column),
@@ -610,6 +826,18 @@ class $$SightingsTableAnnotationComposer
 
   GeneratedColumn<String> get imagePath =>
       $composableBuilder(column: $table.imagePath, builder: (column) => column);
+
+  GeneratedColumn<double> get x =>
+      $composableBuilder(column: $table.x, builder: (column) => column);
+
+  GeneratedColumn<double> get y =>
+      $composableBuilder(column: $table.y, builder: (column) => column);
+
+  GeneratedColumn<double> get w =>
+      $composableBuilder(column: $table.w, builder: (column) => column);
+
+  GeneratedColumn<double> get h =>
+      $composableBuilder(column: $table.h, builder: (column) => column);
 
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
@@ -651,6 +879,10 @@ class $$SightingsTableTableManager
                 Value<double> longitude = const Value.absent(),
                 Value<String> description = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
+                Value<double?> x = const Value.absent(),
+                Value<double?> y = const Value.absent(),
+                Value<double?> w = const Value.absent(),
+                Value<double?> h = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<int> userId = const Value.absent(),
               }) => SightingsCompanion(
@@ -659,6 +891,10 @@ class $$SightingsTableTableManager
                 longitude: longitude,
                 description: description,
                 imagePath: imagePath,
+                x: x,
+                y: y,
+                w: w,
+                h: h,
                 date: date,
                 userId: userId,
               ),
@@ -669,6 +905,10 @@ class $$SightingsTableTableManager
                 required double longitude,
                 required String description,
                 Value<String?> imagePath = const Value.absent(),
+                Value<double?> x = const Value.absent(),
+                Value<double?> y = const Value.absent(),
+                Value<double?> w = const Value.absent(),
+                Value<double?> h = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 required int userId,
               }) => SightingsCompanion.insert(
@@ -677,6 +917,10 @@ class $$SightingsTableTableManager
                 longitude: longitude,
                 description: description,
                 imagePath: imagePath,
+                x: x,
+                y: y,
+                w: w,
+                h: h,
                 date: date,
                 userId: userId,
               ),

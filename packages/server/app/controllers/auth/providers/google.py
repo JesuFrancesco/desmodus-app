@@ -43,7 +43,7 @@ def login():
     return {
         "auth_url": f"https://accounts.google.com/o/oauth2/auth"
         f"?client_id={GOOGLE_CLIENT_ID}&redirect_uri={REDIRECT_URI}"
-        f"&response_type=code&scope=openid email profile"
+        f"&response_type=code&scope=openid+email+profile"
     }
 
 
@@ -103,7 +103,7 @@ async def auth_callback(
         value=jWebToken,
         httponly=True,
         secure=False,
-        samesite="Lax",
+        samesite="lax",
     )
 
     return {"ok": True}
@@ -146,10 +146,11 @@ async def flutter_callback(
 
     response.set_cookie(
         key="access_token",
+        # key="lissachatina_access_token",
         value=jWebToken,
         httponly=True,
         secure=False,
-        samesite="Lax",
+        samesite="lax",
     )
 
     return {"ok": True}
@@ -158,4 +159,5 @@ async def flutter_callback(
 @router.post("/logout")
 def logout(response: Response):
     response.delete_cookie("access_token")
+    # response.delete_cookie("lissachatina_access_token")
     return {"message": "Logged out successfully"}

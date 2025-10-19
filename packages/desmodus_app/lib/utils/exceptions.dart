@@ -7,3 +7,11 @@ class BajaConfianzaException implements Exception {
     return "BajaConfianzaException: $message";
   }
 }
+
+class UbigeoNotFoundException implements Exception {
+  final String message;
+  UbigeoNotFoundException(this.message);
+
+  @override
+  String toString() => 'UbigeoNotFoundException: $message';
+}

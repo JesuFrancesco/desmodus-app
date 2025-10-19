@@ -10,7 +10,7 @@ def expire_date(days: int):
 
 def write_token(data: dict):
     token = encode(
-        payload={**data, "exp": expire_date(60)},
+        payload={**data, "exp": expire_date(60), "role": data.get("role", "user")},
         key=os.getenv("JWT_SECRET_KEY"),
         algorithm="HS256",
     )
