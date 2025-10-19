@@ -13,16 +13,17 @@ logger = get_logger(__name__)
 
 class Config(BaseSettings, case_sensitive=True):
     # Environment
-    AMBIENTE: str | None = Field(default=None, alias="AMBIENTE")
-    PORT: int | None = Field(default=8054, alias="PORT")
+    AMBIENTE: str = Field(default="dev", alias="AMBIENTE")
+    PORT: int = Field(default=8054, alias="PORT")
 
     # Auth
     JWT_SECRET_KEY: str | None = Field(default=None, alias="JWT_SECRET_KEY")
     SECURE_COOKIE: str | None = Field(default=None, alias="SECURE_COOKIE")
 
-    # Supabase secrets
-    SUPABASE_URL: str | None = Field(default=None, alias="SUPABASE_URL")
-    SUPABASE_ANON_KEY: str | None = Field(default=None, alias="SUPABASE_ANON_KEY")
+    # Azure Storage
+    AZURE_STORAGE_CONNECTION_STRING: str | None = Field(
+        default=None, alias="AZURE_STORAGE_CONNECTION_STRING"
+    )
 
     # Google Oauth
     GOOGLE_CLIENT_ID: str | None = Field(default=None, alias="GOOGLE_CLIENT_ID")
@@ -44,15 +45,12 @@ class Config(BaseSettings, case_sensitive=True):
     DATABASE_USER: str | None = Field(default=None, alias="DATABASE_USER")
     DATABASE_PASSWORD: str | None = Field(default=None, alias="DATABASE_PASSWORD")
 
-    # Gradio / Huggingface
-    GRADIO_SERVICE_URL: str | None = Field(default=None, alias="GRADIO_SERVICE_URL")
-
 
 @lru_cache()
 def get_config() -> Config:
     config = Config()
 
-    for field in config.model_fields:
+    for field in type(config).model_fields:
         if getattr(config, field) is None:
             logger.warning("La variable de entorno %s no está configurada", field)
 

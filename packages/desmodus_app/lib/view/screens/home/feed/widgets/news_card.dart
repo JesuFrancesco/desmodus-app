@@ -1,14 +1,14 @@
+import 'package:desmodus_app/model/entity/noticia.dart';
 import 'package:flutter/material.dart';
-import 'package:desmodus_app/model/entity/news.dart';
 import 'package:desmodus_app/view/ui/theme/fonts.dart';
 import 'package:get/get.dart';
 import 'package:desmodus_app/viewmodel/controllers/home_controller.dart';
 
-class NewsCard extends GetView<HomeController> {
-  final News news;
+class NoticiaCard extends GetView<HomeController> {
+  final Noticia noticia;
   final VoidCallback onTap;
 
-  const NewsCard({super.key, required this.news, required this.onTap});
+  const NoticiaCard({super.key, required this.noticia, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +42,9 @@ class NewsCard extends GetView<HomeController> {
                     height: 80,
                     color: Colors.grey[300],
                     child:
-                        news.imageUrl != null
+                        noticia.noticiaArchivos.isNotEmpty
                             ? Image.network(
-                              news.imageUrl!,
+                              noticia.noticiaArchivos.first.archivo.imageUrl,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return const Icon(
@@ -68,7 +68,7 @@ class NewsCard extends GetView<HomeController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        news.title,
+                        noticia.title,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -79,7 +79,7 @@ class NewsCard extends GetView<HomeController> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        news.description,
+                        noticia.content,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[600],

@@ -348,14 +348,12 @@ class UserInformationWidget extends StatelessWidget {
             CircleAvatar(
               radius: 30,
               backgroundImage: NetworkImage(
-                "${authController.userData["avatar_url"]}",
+                "${authController.userData.value.avatarUrl}",
               ),
               backgroundColor: Colors.grey[200], // fallback background
             ),
             20.ph,
             // == User Information (text)
-            // TODO: Tiene que mostrar nombre, dirección entre otros
-            // en lugar del payload de jwt
             Flexible(
               child: Obx(
                 () =>

@@ -20,8 +20,14 @@ class Avistamiento(SQLModel, table=True):
     __tablename__ = "avistamientos"
 
     id: int | None = Field(default=None, primary_key=True)
-    longitud: Decimal = Field(default=Decimal("0.00"), sa_column=Column(DECIMAL(10, 2)))
-    latitud: Decimal = Field(default=Decimal("0.00"), sa_column=Column(DECIMAL(10, 2)))
+    longitud: Decimal = Field(default=Decimal("0.00"), sa_column=Column(DECIMAL(10, 4)))
+    latitud: Decimal = Field(default=Decimal("0.00"), sa_column=Column(DECIMAL(10, 4)))
+
+    x: Decimal | None = Field(default=None, sa_column=Column(DECIMAL(10, 4)))
+    y: Decimal | None = Field(default=None, sa_column=Column(DECIMAL(10, 4)))
+    w: Decimal | None = Field(default=None, sa_column=Column(DECIMAL(10, 4)))
+    h: Decimal | None = Field(default=None, sa_column=Column(DECIMAL(10, 4)))
+
     description: str | None = Field(
         default=None,
         nullable=True,

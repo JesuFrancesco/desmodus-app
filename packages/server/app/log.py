@@ -1,19 +1,32 @@
 import logging
+from threading import Lock
+
+# Internal storage for created loggers
+_loggers = {}
+_logger_lock = Lock()
 
 
 def get_logger(name: str) -> logging.Logger:
     """
-    Returns a logger with the specified name.
+    Returns a singleton logger with the specified name.
+    Ensures logger is only configured once.
     """
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
-    if not logger.hasHandlers():
-        handler = logging.StreamHandler()
-        handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - [%(levelname)s] - %(message)s"
-        )
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-    logger.info("Logger configurado correctamente")
-    return logger
+    with _logger_lock:
+        if name in _loggers:
+            return _loggers[name]
+
+        logger = logging.getLogger(name)
+        logger.setLevel(logging.DEBUG)
+
+        if not logger.hasHandlers():
+            handler = logging.StreamHandler()
+            # handler.setLevel(logging.DEBUG)
+            formatter = logging.Formatter(
+                "%(asctime)s - %(name)s - [%(levelname)s] - %(message)s"
+            )
+            handler.setFormatter(formatter)
+            logger.addHandler(handler)
+
+        logger.info("Logger configurado correctamente")
+        _loggers[name] = logger
+        return logger

@@ -4,7 +4,7 @@ import 'package:desmodus_app/view/ui/theme/colors.dart';
 import 'package:desmodus_app/view/ui/theme/fonts.dart';
 import 'package:desmodus_app/viewmodel/controllers/news_detail_controller.dart';
 
-class NewsDetailScreen extends GetView<NewsDetailController> {
+class NewsDetailScreen extends GetView<DetalleNoticiaController> {
   const NewsDetailScreen({super.key});
 
   @override
@@ -21,9 +21,14 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
                 fit: StackFit.expand,
                 children: [
                   // Imagen de fondo
-                  controller.news.imageUrl != null
+                  controller.noticia.noticiaArchivos.isNotEmpty
                       ? Image.network(
-                        controller.news.imageUrl!,
+                        controller
+                            .noticia
+                            .noticiaArchivos
+                            .first
+                            .archivo
+                            .imageUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return const Icon(Icons.image, size: 80);
@@ -85,41 +90,9 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Fecha y autor
-                  if (controller.news.publishedAt != null ||
-                      controller.news.author != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Row(
-                        children: [
-                          if (controller.news.publishedAt != null)
-                            Text(
-                              controller.formatDate(
-                                controller.news.publishedAt!,
-                              ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: AppFonts.primaryFont,
-                              ),
-                            ),
-                          if (controller.news.publishedAt != null &&
-                              controller.news.author != null)
-                            Text(' • '),
-                          if (controller.news.author != null)
-                            Text(
-                              controller.news.author!,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: AppFonts.primaryFont,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-
                   // Título
                   Text(
-                    controller.news.title,
+                    controller.noticia.title,
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -131,7 +104,7 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
 
                   // Descripción
                   Text(
-                    controller.news.description,
+                    controller.noticia.content,
                     style: TextStyle(
                       fontSize: 18,
                       fontFamily: AppFonts.primaryFont,
@@ -141,9 +114,9 @@ class NewsDetailScreen extends GetView<NewsDetailController> {
                   const SizedBox(height: 24),
 
                   // Contenido completo
-                  if (controller.news.content != null)
+                  if (controller.noticia.content.isNotEmpty)
                     Text(
-                      controller.news.content!,
+                      controller.noticia.content,
                       style: const TextStyle(
                         fontSize: 16,
                         fontFamily: AppFonts.primaryFont,

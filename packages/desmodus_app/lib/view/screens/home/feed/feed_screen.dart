@@ -52,8 +52,8 @@ class FeedScreen extends GetView<HomeController> {
                                 (context, index) => const SizedBox(height: 12),
                             itemBuilder: (context, index) {
                               final news = controller.newsList[index];
-                              return NewsCard(
-                                news: news,
+                              return NoticiaCard(
+                                noticia: news,
                                 onTap:
                                     () => controller.navigateToNewsDetail(news),
                               );
@@ -116,7 +116,7 @@ class FeedScreen extends GetView<HomeController> {
                             Colors.red.shade50,
                           ),
                         ),
-                        onPressed: () => authController.logout(),
+                        onPressed: () => authController.cerrarSesion(),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -175,7 +175,7 @@ class UserGreetingsWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      "Hola ${authController.userData["name"]}! 👋",
+                      "Hola ${authController.userData.value.name}! 👋",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 24,
@@ -186,7 +186,7 @@ class UserGreetingsWidget extends StatelessWidget {
                     CircleAvatar(
                       radius: 50,
                       backgroundImage: NetworkImage(
-                        "${authController.userData["avatar_url"]}",
+                        "${authController.userData.value.avatarUrl}",
                       ),
                       backgroundColor: Colors.grey[200], // fallback background
                     ),

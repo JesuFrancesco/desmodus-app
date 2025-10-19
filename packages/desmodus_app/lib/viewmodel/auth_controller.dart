@@ -1,27 +1,81 @@
-import 'package:flutter/material.dart' show WidgetsBinding;
-import 'package:get/get.dart';
+import 'package:desmodus_app/model/entity/user.dart';
 import 'package:desmodus_app/model/service/remote/auth_service.dart';
 import 'package:desmodus_app/utils/cookies.dart';
+import 'package:desmodus_app/utils/jwt.dart';
+import 'package:flutter/material.dart' show WidgetsBinding, debugPrint;
+import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   final _service = AuthService();
   final usuarioCompleto = false.obs;
-  final userData = <String, dynamic>{}.obs;
+
+  late final userData = User.anonymous().obs;
   final isLoading = false.obs;
 
-  String? get accessToken => getCookie("access_token");
-  bool get isSignedId => userData.isEmpty ? false : true;
+  bool get isSignedId => userData.value.id == 0 ? false : true;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      actualizarInfoUsuario();
+      try {
+        _obtenerDatosJWT();
+        actualizarInfoUsuario();
+      } catch (e) {
+        debugPrint(e.toString());
+      } finally {
+        isLoading.value = false;
+      }
     });
   }
 
+  Future<void> _obtenerDatosJWT() async {
+    try {
+      final cookieAccessToken = getCookie("access_token");
+
+      assert(
+        cookieAccessToken != null,
+        "No se encontró el token de acceso en las cookies",
+      );
+
+      final payload = parseJwt(cookieAccessToken!);
+
+      // userData.value = {
+      //   "id": payload["id"],
+      //   "name": payload["sub"],
+      // };
+
+      userData.value = User(
+        id: payload["id"],
+        name: payload["sub"],
+        email: payload["email"] ?? userData.value.email,
+        phone: payload["phone"] ?? userData.value.phone,
+        dni: payload["dni"] ?? userData.value.dni,
+        distritoId: payload["distrito_id"] ?? userData.value.distritoId,
+        avatarUrl: payload["avatar_url"] ?? userData.value.avatarUrl,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  // bool isUserInfoComplete(Map<String, dynamic> user) {
+  //   final requiredFields = ["name", "email", "phone", "dni", "distrito_id"];
+  //   for (var field in requiredFields) {
+  //     if (user[field] == null ||
+  //         (user[field] is String && user[field].trim().isEmpty)) {
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // }
+
   Future<void> actualizarInfoUsuario({String? newToken}) async {
-    if (accessToken == null && newToken == null) {
+    final cookieAccessToken = getCookie("access_token");
+
+    if (newToken == null && cookieAccessToken == null) {
+      userData.value = User.anonymous();
       return Get.offAndToNamed("/login");
     }
 
@@ -30,48 +84,40 @@ class AuthController extends GetxController {
 
       Get.offAndToNamed("/home");
 
-      final user = await _service.getUserPayload(newToken ?? accessToken!);
+      final user = await _service.getUserData(
+        newToken ?? cookieAccessToken ?? "UNAUTHORIZED",
+      );
 
       userData.value = user;
 
-      if (usuarioCompleto.value || _isUserDataComplete(user)) {
+      if (userData.value.isComplete()) {
         usuarioCompleto.value = true;
       } else {
-        Get.offAndToNamed("/cuestionario");
+        debugPrint("Usuario incompleto, redirigiendo a cuestionario...");
+        return Get.offAndToNamed("/cuestionario");
       }
     } catch (e) {
-      print("⚠️ Actualizar info usuario error: $e");
+      debugPrint(e.toString());
       Get.offAndToNamed("/login");
     } finally {
       isLoading.value = false;
     }
   }
 
-  bool _isUserDataComplete(Map<String, dynamic> user) {
-    final requiredFields = ["name", "email", "phone", "dni", "distrito_id"];
-    for (var field in requiredFields) {
-      if (user[field] == null ||
-          (user[field] is String && user[field].trim().isEmpty)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   Future<void> iniciarSesionConGoogle() async {
     try {
       isLoading.value = true;
 
-      final newAccessToken = await _service.googleSignIn();
+      final newAccessToken =
+          await _service.googleSignIn(); // manejado con google_sign_in
 
-      if (accessToken != "") {
-        storeCookie("access_token", newAccessToken);
-        await actualizarInfoUsuario(newToken: newAccessToken);
-        print("Autorización exitosa: $newAccessToken");
-        Get.offAndToNamed("/home");
-      }
+      storeCookie("access_token", newAccessToken);
+
+      return await actualizarInfoUsuario(
+        newToken: newAccessToken,
+      ); // incluye redirección
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -81,9 +127,9 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
 
-      await _service.discordSignIn();
+      return await _service.discordSignIn(); // manejado con launchUrl
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -91,10 +137,6 @@ class AuthController extends GetxController {
 
   Future<void> cerrarSesion() async {
     deleteCookie("access_token");
-    Get.offAndToNamed("/login");
-  }
-
-  void logout() {
-    cerrarSesion();
+    await Get.offAndToNamed("/login");
   }
 }
