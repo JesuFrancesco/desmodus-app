@@ -43,14 +43,14 @@ def create_avist(session: Session, avist_data: AvistamientoCreate, file: UploadF
         logger.info("Archivo guardado en DB: %s", archivo)
 
     except DuplicateArchivoError as e:
-        logger.warning("DuplicateArchivoError subiendo imagen a Supabase: %s", e)
+        logger.warning("DuplicateArchivoError subiendo imagen a Blob Service: %s", e)
         img_url, img_key = e.image_url, e.image_path
         archivo = session.exec(
             select(Archivo).where(Archivo.image_url == img_url)
         ).first() or guardar_archivo(img_url)
 
     except Exception as e:
-        logger.error("Error subiendo imagen a Supabase: %s", e)
+        logger.error("Error subiendo imagen a Blob Service: %s", e)
         raise HTTPException(status_code=500, detail="Error al subir imagen.")
 
     if not img_url or not img_key or not archivo:
