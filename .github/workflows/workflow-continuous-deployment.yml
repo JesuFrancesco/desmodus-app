@@ -23,8 +23,7 @@ on:
         required: true
 
 env:
-  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+  AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
   AZURE_WEBAPP_NAME: desmodus-app
 
 jobs:
