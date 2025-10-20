@@ -21,25 +21,21 @@ class ClientSightingsService {
   }
 
   Future<Sighting?> insertarSighting(SightingsCompanion sighting) async {
-    try {
-      final db = AppDatabase.instance();
-      final id = await db.into(db.sightings).insert(sighting);
-      return Sighting(
-        id: id,
-        latitude: sighting.latitude.value,
-        longitude: sighting.longitude.value,
-        description: sighting.description.value,
-        imagePath: sighting.imagePath.value,
-        date: sighting.date.value,
-        userId: sighting.userId.value,
-        x: sighting.x.value,
-        y: sighting.y.value,
-        w: sighting.w.value,
-        h: sighting.h.value,
-      );
-    } on Exception {
-      return null;
-    }
+    final db = AppDatabase.instance();
+    final id = await db.into(db.sightings).insert(sighting);
+    return Sighting(
+      id: id,
+      latitude: sighting.latitude.value,
+      longitude: sighting.longitude.value,
+      description: sighting.description.value,
+      imagePath: sighting.imagePath.value,
+      date: sighting.date.value,
+      userId: sighting.userId.value,
+      x: sighting.x.value,
+      y: sighting.y.value,
+      w: sighting.w.value,
+      h: sighting.h.value,
+    );
   }
 
   Future<bool> eliminarAvistamiento(Sighting sighting) async {

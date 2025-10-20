@@ -81,7 +81,7 @@ class ClientSightingsController extends GetxController {
       await deleteSighting(sighting);
     } on BajaConfianzaException catch (e) {
       // Si la confianza del avistamiento levanto exception, no subir e informar
-      print(e);
+      debugPrint(e.toString());
       await deleteSighting(sighting);
       Get.dialog(
         AlertDialog(
