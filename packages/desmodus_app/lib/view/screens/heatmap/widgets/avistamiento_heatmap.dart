@@ -26,109 +26,118 @@ class AvistamientoHeatmap extends StatelessWidget {
       ),
     );
 
-    return Obx(
-      () =>
-          !locationController.hasPermission.value
-              ? DeniedLocationPermissionWidget()
-              : avistController.isLoading.value
-              ? const Center(child: CircularProgressIndicator())
-              : FlutterMap(
-                key: locationController.mapKey,
-                mapController: locationController.mapController,
-                options: MapOptions(
-                  initialZoom: 12.5,
-                  minZoom: 5,
-                  initialCenter: LatLng(
-                    locationController.latitud.value,
-                    locationController.longitud.value,
-                  ),
-                ),
-                children: [
-                  // ======================
-                  // OSM map tile
-                  // ======================
-                  Obx(
-                    () => TileLayer(
-                      urlTemplate: locationController.mapTileUrl.value,
-                      userAgentPackageName:
-                          "github.jesufrancesco.lissachatina_app",
+    return Obx(() {
+      if (!locationController.hasPermission.value) {
+        return const DeniedLocationPermissionWidget();
+      }
+
+      if (avistController.isLoading.value ||
+          locationController.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      final lat = locationController.latitud.value;
+      final lng = locationController.longitud.value;
+
+      // Validar coordenadas antes de crear el mapa
+      if (lat.isNaN ||
+          lng.isNaN ||
+          !lat.isFinite ||
+          !lng.isFinite ||
+          (lat == 0 && lng == 0)) {
+        return const Center(child: Text("Esperando coordenadas válidas..."));
+      }
+
+      return FlutterMap(
+        key: locationController.mapKey,
+        mapController: locationController.mapController,
+        options: MapOptions(
+          initialZoom: 12.5,
+          minZoom: 5,
+          initialCenter: LatLng(
+            locationController.latitud.value,
+            locationController.longitud.value,
+          ),
+        ),
+        children: [
+          // ======================
+          // OSM map tile
+          // ======================
+          Obx(
+            () => TileLayer(
+              urlTemplate: locationController.mapTileUrl.value,
+              userAgentPackageName: "github.jesufrancesco.lissachatina_app",
+            ),
+          ),
+          // ====================
+          // Heatmap layer
+          // ====================
+          Obx(
+            () =>
+                avistController.allAvistamientos.isEmpty
+                    ? SizedBox.shrink()
+                    : HeatMapLayer(
+                      heatMapOptions: HeatMapOptions(
+                        radius:
+                            locationController.heatmapRadius.value, // 50 metros
+                      ),
+                      heatMapDataSource: InMemoryHeatMapDataSource(
+                        data:
+                            avistController.allAvistamientos
+                                .map(
+                                  (e) => WeightedLatLng(
+                                    LatLng(e.latitud, e.longitud),
+                                    3e1, // 30 avistamientos de peso
+                                  ),
+                                )
+                                .toList(),
+                      ),
+                    ),
+          ),
+          // ============================
+          // Avistamiento Markers layer
+          // ============================
+          Obx(() {
+            final lat = locationController.latitud.value;
+            final lng = locationController.longitud.value;
+            final allAvist = avistController.allAvistamientos;
+            return MarkerLayer(
+              markers: [
+                Marker(
+                  point: LatLng(lat, lng),
+                  child: GestureDetector(
+                    onTap: showUserSnackbar,
+                    child: const Icon(
+                      Icons.location_pin,
+                      size: 32,
+                      color: Colors.black,
                     ),
                   ),
-                  // ====================
-                  // Heatmap layer
-                  // ====================
-                  Obx(
-                    () =>
-                        avistController.allAvistamientos.isEmpty
-                            ? SizedBox.shrink()
-                            : HeatMapLayer(
-                              heatMapOptions: HeatMapOptions(
-                                radius:
-                                    locationController
-                                        .heatmapRadius
-                                        .value, // 50 metros
-                              ),
-                              heatMapDataSource: InMemoryHeatMapDataSource(
-                                data:
-                                    avistController.allAvistamientos
-                                        .map(
-                                          (e) => WeightedLatLng(
-                                            LatLng(e.latitud, e.longitud),
-                                            3e1, // 30 avistamientos de peso
-                                          ),
-                                        )
-                                        .toList(),
-                              ),
-                            ),
+                ),
+                ...allAvist.map(
+                  (e) => Marker(
+                    point: LatLng(e.latitud, e.longitud),
+                    child: GestureDetector(
+                      onTap: () {
+                        final mapper = SightingAvistMapper();
+                        Get.to(
+                          GalleryItemScreen(
+                            gallerySighting: mapper
+                                .avistamientoToGallerySighting(e),
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.warning, size: 20, color: Colors.red),
+                    ),
                   ),
-                  // ============================
-                  // Avistamiento Markers layer
-                  // ============================
-                  Obx(() {
-                    final lat = locationController.latitud.value;
-                    final lng = locationController.longitud.value;
-                    final allAvist = avistController.allAvistamientos;
-                    return MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: LatLng(lat, lng),
-                          child: GestureDetector(
-                            onTap: showUserSnackbar,
-                            child: const Icon(
-                              Icons.location_pin,
-                              size: 32,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        ...allAvist.map(
-                          (e) => Marker(
-                            point: LatLng(e.latitud, e.longitud),
-                            child: GestureDetector(
-                              onTap: () {
-                                final mapper = SightingAvistMapper();
-                                Get.to(
-                                  GalleryItemScreen(
-                                    gallerySighting: mapper
-                                        .avistamientoToGallerySighting(e),
-                                  ),
-                                );
-                              },
-                              child: Icon(
-                                Icons.warning,
-                                size: 20,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                  ...additionalStackWidgets,
-                ],
-              ),
-    );
+                ),
+              ],
+            );
+          }),
+          ...additionalStackWidgets,
+        ],
+      );
+    });
   }
 }
 

@@ -145,8 +145,8 @@ class CuestionarioScreen extends StatelessWidget {
                         if (val == null || val.isEmpty) {
                           return "Ingrese número de documento";
                         }
-                        if (!RegExp(r'^[0-9]{8,12}$').hasMatch(val)) {
-                          return "Documento inválido (solo números de 8 o 12 dígitos)";
+                        if (!RegExp(r'^[0-9]{8}$').hasMatch(val)) {
+                          return "Documento inválido (solo números de 8 dígitos)";
                         }
                         return null;
                       },
@@ -367,7 +367,7 @@ class CuestionarioScreen extends StatelessWidget {
               ),
               10.pv,
               TextButton(
-                onPressed: () => Get.offNamed("/dashboard"),
+                onPressed: () => Get.offNamed("/home"),
                 child: const Text("Omitir por ahora"),
               ),
               30.pv,

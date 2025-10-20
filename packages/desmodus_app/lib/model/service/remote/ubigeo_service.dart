@@ -13,7 +13,7 @@ class UbigeoService {
     final placemarks = await getPlacemarksFromLatLong(lat, long);
 
     if (placemarks.isEmpty) {
-      throw Exception(
+      throw UbigeoNotFoundException(
         'No se encontraron datos de ubicación para las coordenadas proporcionadas.',
       );
     }

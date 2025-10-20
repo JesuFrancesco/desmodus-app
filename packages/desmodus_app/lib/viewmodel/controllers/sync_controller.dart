@@ -72,6 +72,7 @@ class SyncController extends GetxController {
           );
         } on UbigeoNotFoundException catch (e) {
           debugPrint("Error: ${e.message}");
+          ubigeoCode = "000000";
         }
         await clientController.uploadSightingToServer(
           Get.context!,
