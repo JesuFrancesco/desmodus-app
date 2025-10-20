@@ -181,11 +181,14 @@ class ClientSightingsController extends GetxController {
       Get.find<RemoteSightingsController>().cargarMisAvistamientos();
     } catch (e) {
       debugPrint("Error al agregar avistamiento: $e");
-      Get.snackbar(
-        "Error",
-        "No se pudo guardar el avistamiento localmente. Intenta de nuevo.",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Get.theme.colorScheme.errorContainer,
+      Get.dialog(
+        AlertDialog(
+          title: Text("Error"),
+          content: Text(
+            "No se pudo guardar el avistamiento localmente. Intenta de nuevo. $e",
+          ),
+          actions: [TextButton(onPressed: Get.back, child: Text("Okay"))],
+        ),
       );
     } finally {
       isLoading.value = false;
