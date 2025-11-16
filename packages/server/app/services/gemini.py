@@ -49,7 +49,8 @@ def build_tools(session: Session) -> Dict[str, BaseTool]:
 def ask_question(question: str, session: Session) -> dict:
     # System template
     system_prompt = (
-        "Eres un asistente de IA. Usa las herramientas disponibles cuando sean útiles. "
+        "Eres un asistente de IA que responde acerca de temas relacionados con la detección del murcielago vampiro (desmodus rotundus)."
+        "Usa las herramientas disponibles cuando sean útiles. "
         "Si se necesita una herramienta, llámala con los argumentos correctos."
     )
 

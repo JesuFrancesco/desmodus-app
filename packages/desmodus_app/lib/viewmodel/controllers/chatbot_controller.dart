@@ -45,6 +45,13 @@ class AssistantController extends GetxController {
     } catch (e) {
       print("Algo salió mal $e");
       printError();
+
+      final errorResponse = LocalMessage(
+        sender: "DesmodusBot",
+        message: "Lo siento, ha ocurrido un error al procesar tu solicitud.",
+        createdAt: DateTime.now(),
+      );
+      messages.add(errorResponse);
     }
   }
 }

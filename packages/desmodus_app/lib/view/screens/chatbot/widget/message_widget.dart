@@ -1,6 +1,6 @@
-// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:desmodus_app/model/entity/local_message.dart';
+import 'package:markdown_widget/widget/markdown_block.dart';
 
 class MessageWidget extends StatelessWidget {
   final LocalMessage message;
@@ -39,10 +39,7 @@ class MessageWidget extends StatelessWidget {
                     if (message.message.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
-                        child: Text(
-                          message.message,
-                          style: const TextStyle(fontSize: 14),
-                        ),
+                        child: MarkdownBlock(data: message.message),
                       ),
                     if (message.images.isNotEmpty)
                       Padding(
