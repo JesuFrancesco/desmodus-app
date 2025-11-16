@@ -1,4 +1,3 @@
-import 'package:desmodus_app/view/screens/login/widget/facebook_sign_in.dart';
 import 'package:desmodus_app/view/screens/login/widget/map_redirect.dart';
 import 'package:flutter/material.dart';
 import 'package:desmodus_app/view/screens/login/widget/app_logo.dart';
@@ -40,7 +39,6 @@ class _LoginScreenState extends State<LoginScreen> {
             // AUTH PROVIDERS
             GoogleSignInButton(),
             DiscordSignInButton(),
-            FacebookSignInButton(),
 
             // DIVIDER
             Divider(

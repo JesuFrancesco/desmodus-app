@@ -12,6 +12,7 @@ from app.controllers import (
     provincia,
     users,
     senasa_producer,
+    gemini,
 )
 from app.controllers.auth.providers import discord, google
 from app.controllers.auth import auth
@@ -32,7 +33,7 @@ async def lifespan(_: FastAPI):
 app = FastAPI(
     title="Desmodus API",
     description="REST API para el proyecto Desmodus App.",
-    version="1.0.0",
+    version="2.0.0",
     contact={
         "name": "JesuFrancesco",
         "email": "20210109@aloe.ulima.edu.pe",
@@ -69,6 +70,8 @@ app.include_router(google.router, prefix="/google-auth", tags=["google-auth"])
 app.include_router(discord.router, prefix="/discord-auth", tags=["discord-auth"])
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 
+app.include_router(gemini.router, prefix="/chatbot", tags=["gemini"])
+
 if __name__ == "__main__":
     import uvicorn
     from app.config import get_config
@@ -76,6 +79,6 @@ if __name__ == "__main__":
     settings = get_config()
 
     if settings.AMBIENTE == "dev":
-        uvicorn.run("app.main:app", port=settings.PORT, reload=True)
+        uvicorn.run("app.main:app", host="0.0.0.0", port=settings.PORT, reload=True)
     else:
-        uvicorn.run("app.main:app", port=settings.PORT)
+        uvicorn.run("app.main:app", host="0.0.0.0", port=settings.PORT)

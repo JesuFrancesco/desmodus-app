@@ -38,12 +38,10 @@ class Config(BaseSettings, case_sensitive=True):
     DISCORD_CALLBACK_URL: str | None = Field(default=None, alias="DISCORD_CALLBACK_URL")
 
     # Database
-    DATABASE_ENGINE: str | None = Field(default=None, alias="DATABASE_ENGINE")
-    DATABASE_URL: str | None = Field(default=None, alias="DATABASE_URL")
-    DATABASE_PORT: str | None = Field(default=None, alias="DATABASE_PORT")
-    DATABASE_NAME: str | None = Field(default=None, alias="DATABASE_NAME")
-    DATABASE_USER: str | None = Field(default=None, alias="DATABASE_USER")
-    DATABASE_PASSWORD: str | None = Field(default=None, alias="DATABASE_PASSWORD")
+    DB_CONNECTION_STRING: str | None = Field(default=None, alias="DB_CONNECTION_STRING")
+
+    # Gemini
+    GOOGLE_API_KEY: str | None = Field(default=None, alias="GOOGLE_API_KEY")
 
 
 @lru_cache()

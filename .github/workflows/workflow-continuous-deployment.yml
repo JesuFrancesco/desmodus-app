@@ -3,27 +3,8 @@ run-name: Despliegue continuo para Desmodus - ${{ github.ref }}
 
 on:
   workflow_call:
-    secrets:
-      # Database secrets
-      DATABASE_ENGINE:
-        required: true
-      DATABASE_USER:
-        required: true
-      DATABASE_PASSWORD:
-        required: true
-      DATABASE_URL:
-        required: true
-      DATABASE_PORT:
-        required: true
-      DATABASE_NAME:
-        required: true
-
-      # Azure secrets
-      AZURE_WEBAPP_PUBLISH_PROFILE:
-        required: true
 
 env:
-  AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
   AZURE_WEBAPP_NAME: desmodus-app
 
 jobs:
@@ -54,12 +35,7 @@ jobs:
       # 2. Ejecutar migraciones de producción
       - name: Ejecutar migraciones
         env:
-          DATABASE_ENGINE: ${{ secrets.DATABASE_ENGINE }}
-          DATABASE_USER: ${{ secrets.DATABASE_USER }}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
-          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
         run: |
           cd server-artifacts
 

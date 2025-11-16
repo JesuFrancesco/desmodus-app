@@ -54,5 +54,5 @@ def get_a_departamento_by_name(session: Session, name: str):
     return departamento
 
 
-def get_one_departamento(session: Session, departamento_id: int):
+def get_one_departamento(session: Session, departamento_id: str):
     return session.get(Departamento, departamento_id)

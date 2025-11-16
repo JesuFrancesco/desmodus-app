@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
+import 'package:get/get.dart';
 
 class ChatbotButton extends StatelessWidget {
   const ChatbotButton({super.key});
@@ -7,8 +7,8 @@ class ChatbotButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      // onPressed: () => Get.toNamed('/chatbot'),
-      onPressed: null,
+      onPressed: () => Get.toNamed('/chatbot'),
+      // onPressed: null,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -10,3 +10,4 @@ pytest
 requests
 sqlmodel
 azure-storage-blob
+langchain-google-genai

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
+import 'package:get/get.dart';
 
 class MapButton extends StatelessWidget {
   const MapButton({super.key});
@@ -7,8 +7,7 @@ class MapButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      // onPressed: () => Get.toNamed('/heatmap'),
-      onPressed: null,
+      onPressed: () => Get.toNamed('/heatmap'),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
