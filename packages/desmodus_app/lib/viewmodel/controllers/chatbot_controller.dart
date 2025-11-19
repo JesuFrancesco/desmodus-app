@@ -27,7 +27,7 @@ class AssistantController extends GetxController {
       String respuestaBot = "...";
 
       final response = LocalMessage(
-        sender: "DesmodusBot",
+        sender: "FTAP",
         message: respuestaBot,
         createdAt: DateTime.now(),
       );
@@ -38,7 +38,7 @@ class AssistantController extends GetxController {
       final botResponse = await service.preguntarChatbot(consulta);
 
       messages[messageIndex] = LocalMessage(
-        sender: "DesmodusBot",
+        sender: "FTAP",
         message: botResponse,
         createdAt: DateTime.now(),
       );
@@ -47,7 +47,7 @@ class AssistantController extends GetxController {
       printError();
 
       final errorResponse = LocalMessage(
-        sender: "DesmodusBot",
+        sender: "FTAP",
         message: "Lo siento, ha ocurrido un error al procesar tu solicitud.",
         createdAt: DateTime.now(),
       );

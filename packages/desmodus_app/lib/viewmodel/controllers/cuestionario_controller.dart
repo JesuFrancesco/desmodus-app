@@ -201,7 +201,7 @@ class CuestionarioController extends GetxController {
 
     try {
       isSaving.value = true;
-      final accessToken = getCookie("access_token");
+      final accessToken = await getCookie("access_token");
       await service.guardarDatos(accessToken!, patchData);
       Get.snackbar("Éxito", "Los datos se han guardado correctamente.");
       Get.offAllNamed("/home");

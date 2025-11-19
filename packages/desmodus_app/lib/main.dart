@@ -1,13 +1,13 @@
+import 'package:desmodus_app/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:desmodus_app/config.dart';
 import 'package:desmodus_app/router.dart';
-import 'package:desmodus_app/utils/global.dart';
 import 'package:desmodus_app/utils/deeplink.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await GlobalApp.init();
+  await GlobalStorage.init();
 
   DeepLinkParser().iniciarDeepLinkListener();
 

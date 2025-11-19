@@ -1,3 +1,4 @@
+import 'package:desmodus_app/model/service/client/detector_service.dart';
 import 'package:get/get.dart';
 import 'package:ultralytics_yolo/predict/detect/object_detector.dart';
 import 'dart:io' as io;
@@ -9,6 +10,7 @@ import 'package:ultralytics_yolo/ultralytics_yolo.dart';
 import 'package:ultralytics_yolo/yolo_model.dart';
 
 class DetectorController extends GetxController {
+  final _service = DetectorService();
   final detectionModel = 'desmodus-y11n'.obs;
 
   final detectionThreshold = 0.70.obs;
@@ -18,6 +20,22 @@ class DetectorController extends GetxController {
 
   final localModelsInstalled = <String>[].obs;
   final inferencedCombo = 0.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadAvailableModels();
+    _loadPreferredModel();
+    _loadPrefferedThreshold();
+
+    // _beepTimer = Timer.periodic(const Duration(milliseconds: 1200), (_) async {
+    //   if (playBeepSound.value) {
+    //     debugPrint("🥺 Reproduciendo sonido de beep...");
+    //     playSound();
+    //     Future.microtask(() => playSound());
+    //   }
+    // });
+  }
 
   Future<ObjectDetector> initObjectDetectorWithLocalModel() async {
     final selectedModel = detectionModel.value;
@@ -59,4 +77,40 @@ class DetectorController extends GetxController {
 
     return file.path;
   }
+
+  Future<void> _loadAvailableModels() async {
+    localModelsInstalled.value = await _service.getLocalModels();
+  }
+
+  void _loadPreferredModel() {
+    final preferredModel = _service.getPreferredModel();
+
+    if (preferredModel != null) {
+      setSelectedModel(preferredModel);
+    } else {
+      setSelectedModel("lissachatina-yolo-11n");
+    }
+  }
+
+  void _loadPrefferedThreshold() {
+    final preferredThreshold = _service.getPreferredThreshold();
+
+    if (preferredThreshold != null) {
+      setDetectionThreshold(preferredThreshold);
+    } else {
+      setDetectionThreshold(0.70);
+    }
+  }
+
+  void savePreferredModel() {
+    _service.setPreferredModel(detectionModel.value);
+  }
+
+  void savePreferredThreshold() {
+    _service.setPreferredThreshold(detectionThreshold.value);
+  }
+
+  void setDetectionThreshold(double value) => detectionThreshold.value = value;
+
+  void setSelectedModel(String model) => detectionModel.value = model;
 }

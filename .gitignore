@@ -1,9 +1,10 @@
-packages/notebooks/datasets/*
-!packages/notebooks/datasets/.gitkeep
-packages/notebooks/models/*
-packages/notebooks/runs/*
-!packages/notebooks/models/.gitkeep
-packages/notebooks/*.npy
+# Ignore everything under packages/notebook/
+packages/notebooks/**
+
+# Allow .py and .ipynb files anywhere inside packages/notebook/
+!packages/notebooks/**/*.py
+!packages/notebooks/**/*.ipynb
+
 # Miscellaneous
 *.class
 *.log

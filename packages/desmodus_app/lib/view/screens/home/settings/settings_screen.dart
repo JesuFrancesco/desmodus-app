@@ -244,9 +244,8 @@ class SettingsScreen extends StatelessWidget {
                   divisions: 100,
                   label: "${detectorController.detectionThreshold.value}",
                   onChanged: (value) {
-                    Get.snackbar("WIP Modelo", "Funcionalidad en proceso");
-                    // detectorController.setDetectionThreshold(value);
-                    // detectorController.savePreferredThreshold();
+                    detectorController.setDetectionThreshold(value);
+                    detectorController.savePreferredThreshold();
                   },
                 ),
               ),
@@ -283,12 +282,8 @@ class SettingsScreen extends StatelessWidget {
                       groupValue: detectorController.detectionModel.value,
                       onChanged: (value) {
                         if (value != null) {
-                          Get.snackbar(
-                            "WIP Modelo",
-                            "Funcionalidad en proceso",
-                          );
-                          // detectorController.setSelectedModel(value);
-                          // detectorController.savePreferredModel();
+                          detectorController.setSelectedModel(value);
+                          detectorController.savePreferredModel();
                           Navigator.of(context).pop();
                         }
                       },

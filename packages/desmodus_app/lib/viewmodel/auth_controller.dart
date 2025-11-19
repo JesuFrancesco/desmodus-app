@@ -32,7 +32,7 @@ class AuthController extends GetxController {
 
   Future<void> _obtenerDatosJWT() async {
     try {
-      final cookieAccessToken = getCookie("access_token");
+      final cookieAccessToken = await getCookie("access_token");
 
       assert(
         cookieAccessToken != null,
@@ -72,11 +72,12 @@ class AuthController extends GetxController {
   // }
 
   Future<void> actualizarInfoUsuario({String? newToken}) async {
-    final cookieAccessToken = getCookie("access_token");
+    final cookieAccessToken = await getCookie("access_token");
 
     if (newToken == null && cookieAccessToken == null) {
       userData.value = User.anonymous();
-      return Get.offAndToNamed("/login");
+      // return Get.offAndToNamed("/login");
+      return Get.offAndToNamed("/home");
     }
 
     try {

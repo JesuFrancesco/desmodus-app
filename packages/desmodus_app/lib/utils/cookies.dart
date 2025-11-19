@@ -1,13 +1,13 @@
-import 'package:desmodus_app/utils/global.dart';
+import 'package:desmodus_app/utils/storage.dart';
 
-void storeCookie(String cookieName, String cookieValue) {
-  GlobalApp.localStorage!.setString(cookieName, cookieValue);
+Future<void> storeCookie(String cookieName, String cookieValue) async {
+  await GlobalStorage.secureStorage.write(key: cookieName, value: cookieValue);
 }
 
-String? getCookie(String cookieName) {
-  return GlobalApp.localStorage!.getString(cookieName);
+Future<String?> getCookie(String cookieName) async {
+  return await GlobalStorage.secureStorage.read(key: cookieName);
 }
 
-void deleteCookie(String cookieName) {
-  GlobalApp.localStorage!.remove(cookieName);
+Future<void> deleteCookie(String cookieName) async {
+  await GlobalStorage.secureStorage.delete(key: cookieName);
 }
