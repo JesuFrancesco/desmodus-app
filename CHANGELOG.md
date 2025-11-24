@@ -1,7 +1,6 @@
-# v2.0.2
+# v3.0.0
 
 ## Que incluye esta versión
 
-- Heatmap
-- fix: salir de cuestionario
+- Chatbot
 <!-- debug -->
