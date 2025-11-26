@@ -46,10 +46,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(keystoreProperties["storeFile"])
-            storePassword = keystoreProperties["storePassword"] as String
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
+        //    storeFile = file(keystoreProperties["storeFile"])
+        //    storePassword = keystoreProperties["storePassword"] as String
+        //    keyAlias = keystoreProperties["keyAlias"] as String
+        //    keyPassword = keystoreProperties["keyPassword"] as String
         }
     }
 
@@ -62,7 +62,7 @@ android {
         }
 
         getByName("debug") {
-            signingConfig = signingConfigs.getByName("release")
+            // signingConfig = signingConfigs.getByName("release")
         }
     }
 
