@@ -1,7 +1,7 @@
-description: Ultralytics best model trained on C:\Users\ialab\Documents\dev\desmodus-app\packages\notebooks\data\PLAGUIN-BOMBIN\data.yaml
+description: Ultralytics YOLOv12n model trained on C:\Users\ialab\Documents\dev\desmodus-app\packages\notebooks\data\PLAGUIN-BOMBIN\data.yaml
 author: Ultralytics
-date: '2025-11-24T20:58:50.300613'
-version: 8.3.231
+date: '2025-11-26T18:34:08.277181'
+version: 8.3.232
 license: AGPL-3.0 License (https://ultralytics.com/license)
 docs: https://docs.ultralytics.com
 stride: 32
