@@ -56,7 +56,11 @@ flutter:
     - pubspec.yaml
     - assets/
     - assets/ai-models/
-    - assets/ai-models/desmodus-rgb/
+    - assets/ai-models/desmodus-8-rgb/
+    - assets/ai-models/desmodus-9-rgb/
+    - assets/ai-models/desmodus-10-rgb/
+    - assets/ai-models/desmodus-11-rgb/
+    - assets/ai-models/desmodus-12-rgb/
     - assets/ai-models/desmodus-y9n/
     - assets/ai-models/desmodus-y11n/
     - assets/fonts/
