@@ -88,7 +88,7 @@ class DetectorController extends GetxController {
     if (preferredModel != null) {
       setSelectedModel(preferredModel);
     } else {
-      setSelectedModel("lissachatina-yolo-11n");
+      setSelectedModel("desmodus-11-rgb");
     }
   }
 

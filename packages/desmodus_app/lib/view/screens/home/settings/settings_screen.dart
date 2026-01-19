@@ -180,7 +180,7 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () {
                         launchUrl(
                           Uri.parse(
-                            "https://github.com/jesufrancesco/lissachatina-web",
+                            "https://github.com/jesufrancesco/desmodus-app",
                           ),
                           mode: LaunchMode.externalApplication,
                         );
