@@ -37,6 +37,7 @@ class SightingMarker {
 }
 
 class HomeController extends GetxController {
+  final isLoading = false.obs;
   // Lista observable de noticias
   final RxList<Noticia> newsList = <Noticia>[].obs;
 
@@ -242,12 +243,19 @@ class HomeController extends GetxController {
 
   // Cargar noticias
   void loadNews() async {
-    final service = NoticiaService();
-    final noticias = await service.obtenerNoticiasRecientes();
-    newsList.value = noticias;
+    try {
+      isLoading.value = true;
+      final service = NoticiaService();
+      final noticias = await service.obtenerNoticiasRecientes();
+      newsList.value = noticias;
 
-    // Simular notificación de noticia urgente
-    _checkForUrgentNews();
+      // Simular notificación de noticia urgente
+      _checkForUrgentNews();
+    } catch (e) {
+      debugPrint("Error al cargar noticias: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   // Verificar noticias urgentes

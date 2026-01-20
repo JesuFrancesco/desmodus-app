@@ -20,12 +20,12 @@ class RemoteSightingsService {
       final List<dynamic> data = jsonDecode(res.body);
       return data.map((e) => Avistamiento.fromJson(e)).toList();
     } else {
-      throw Exception('Error al cargar los avistamientos');
+      throw Exception('Error al cargar todos los avistamientos ${res.body}');
     }
   }
 
   Future<List<Avistamiento>> getMyAvistamientos() async {
-    final userJwt = getCookie("access_token");
+    final userJwt = await getCookie("access_token");
 
     final res = await http.get(
       Uri.parse('${Config.apiUrl}/avist/user'),
@@ -38,12 +38,12 @@ class RemoteSightingsService {
       final List<dynamic> data = jsonDecode(res.body);
       return data.map((e) => Avistamiento.fromJson(e)).toList();
     } else {
-      throw Exception('Error al cargar los avistamientos');
+      throw Exception('Error al cargar avistamientos del usuario ${res.body}');
     }
   }
 
   Future<bool> uploadAvistamiento(Avistamiento avist, File imageFile) async {
-    final userJwt = getCookie("access_token");
+    final userJwt = await getCookie("access_token");
 
     final request = http.MultipartRequest(
       'POST',
@@ -72,7 +72,7 @@ class RemoteSightingsService {
   }
 
   Future<bool> deleteAvistamiento(int avistId) async {
-    final userJwt = getCookie("access_token");
+    final userJwt = await getCookie("access_token");
 
     final request = http.MultipartRequest(
       'DELETE',

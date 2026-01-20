@@ -18,8 +18,9 @@ class LocationController extends GetxController {
   final mapTileUrl =
       Config.jawgAccessToken == "UNDEFINED"
           ? "https://tile.openstreetmap.org/{z}/{x}/{y}.png".obs
-          : "https://tile.jawg.io/jawg-terrain/{z}/{x}/{y}.png?access-token=${Config.jawgAccessToken}"
-              .obs;
+          : "https://tile.openstreetmap.org/{z}/{x}/{y}.png".obs
+  // : "https://tile.jawg.io/jawg-terrain/{z}/{x}/{y}.png?access-token=${Config.jawgAccessToken}".obs
+  ;
   final heatmapRadius = 50.0.obs;
   final latitud = 0.0.obs;
   final longitud = 0.0.obs;
@@ -32,7 +33,9 @@ class LocationController extends GetxController {
       await checkPermisoDeUbicacion();
       await _escucharEventosLocator();
     } catch (e) {
-      print("Algo salió mal al inicializar el controlador de ubicación: $e");
+      debugPrint(
+        "Algo salió mal al inicializar el controlador de ubicación: $e",
+      );
     } finally {
       isLoading.value = false;
     }

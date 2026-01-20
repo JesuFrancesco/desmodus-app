@@ -133,7 +133,7 @@ async def auth_callback(
 
 
 @router.get(
-    "/callback-android", summary="Callback que redirige con DeepLink a Lissachatina App"
+    "/callback-android", summary="Callback que redirige con DeepLink a Desmodus App"
 )
 async def auth_callback_android(
     code: str, response: Response, session: Session = Depends(get_session)
@@ -227,7 +227,7 @@ async def auth_callback_android(
 
     response.headers["Content-Type"] = "text/plain"
     response.headers["Location"] = (
-        f"github.jesufrancesco.lissachatina-app://main/auth-callback?jwt={jWebToken}"
+        f"github.jesufrancesco.desmodus-app://main/auth-callback?jwt={jWebToken}"
     )
     response.status_code = 302
     response.body = b"Redirecting..."

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class AssistantService {
   Future<String> preguntarChatbot(String message) async {
-    final userJwt = getCookie("access_token");
+    final userJwt = await getCookie("access_token");
 
     final uri = Uri.parse('${Config.apiUrl}/chatbot/');
 

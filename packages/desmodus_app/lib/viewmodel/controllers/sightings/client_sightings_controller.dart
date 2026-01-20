@@ -135,7 +135,7 @@ class ClientSightingsController extends GetxController {
             ).colorScheme.onErrorContainer,
       );
 
-      print("Algo salio mal al subir avistamiento $e");
+      debugPrint("Algo salio mal al subir avistamiento $e");
     }
   }
 

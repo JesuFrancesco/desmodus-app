@@ -146,7 +146,7 @@ async def flutter_callback(
 
     response.set_cookie(
         key="access_token",
-        # key="lissachatina_access_token",
+        # key="desmodus_access_token",
         value=jWebToken,
         httponly=True,
         secure=False,
@@ -159,5 +159,5 @@ async def flutter_callback(
 @router.post("/logout")
 def logout(response: Response):
     response.delete_cookie("access_token")
-    # response.delete_cookie("lissachatina_access_token")
+    # response.delete_cookie("desmodus_access_token")
     return {"message": "Logged out successfully"}

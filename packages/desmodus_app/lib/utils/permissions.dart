@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart' show debugPrint;
 import 'package:permission_handler/permission_handler.dart';
 
 Future<bool> checkCameraAndStoragePermissions() async {
@@ -37,7 +38,7 @@ Future<bool> checkCameraAndStoragePermissions() async {
         (statuses[Permission.storage] == PermissionStatus.granted ||
             statuses[Permission.photos] == PermissionStatus.granted);
   } on Exception catch (e) {
-    print("Error requesting permissions: $e");
+    debugPrint("Error solicitando permisos: $e");
     return false;
   }
 }

@@ -66,7 +66,7 @@ class AvistamientoHeatmap extends StatelessWidget {
           Obx(
             () => TileLayer(
               urlTemplate: locationController.mapTileUrl.value,
-              userAgentPackageName: "github.jesufrancesco.lissachatina_app",
+              userAgentPackageName: "github.jesufrancesco.desmodus_app",
             ),
           ),
           // ====================
