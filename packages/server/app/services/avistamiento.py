@@ -129,7 +129,10 @@ def delete_user_avist(session: Session, user_id: int, avist_id: int):
 
     # Eliminar archivo asociado si existe
     if avist.archivo:
-        delete_files_from_azure_blob([avist.archivo.image_url.split("/public/")[-1]])
+        try:
+            delete_files_from_azure_blob([avist.archivo.image_url.split("/public/")[-1]])
+        except Exception as e:
+            logger.error("Error eliminando archivo de Azure Blob: %s", e)
         session.delete(avist.archivo)
 
     session.delete(avist)

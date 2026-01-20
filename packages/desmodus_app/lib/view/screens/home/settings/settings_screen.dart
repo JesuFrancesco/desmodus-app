@@ -38,7 +38,7 @@ class SettingsScreen extends StatelessWidget {
                             ? [
                               SettingsItemTile(
                                 title: "Editar datos personales",
-                                onTap: () => Get.offAndToNamed("cuestionario"),
+                                onTap: () => Get.toNamed("cuestionario"),
                               ),
                               SettingsItemTile(
                                 title: "Cerrar sesión",
@@ -342,10 +342,21 @@ class UserInformationWidget extends StatelessWidget {
             // == User avatar
             CircleAvatar(
               radius: 30,
-              backgroundImage: NetworkImage(
-                "${authController.userData.value.avatarUrl}",
-              ),
-              backgroundColor: Colors.grey[200], // fallback background
+              backgroundImage:
+                  authController.userData.value.avatarUrl != null
+                      ? NetworkImage(
+                        "${authController.userData.value.avatarUrl}",
+                      )
+                      : null,
+              backgroundColor: Colors.grey[200],
+              child:
+                  authController.userData.value.avatarUrl == null
+                      ? Icon(
+                        Icons.account_circle_rounded,
+                        color: Colors.black,
+                        size: 60,
+                      )
+                      : null, // fallback background
             ),
             20.ph,
             // == User Information (text)
@@ -367,15 +378,26 @@ class UserInformationWidget extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            4.ph,
-                            Obx(
-                              () => Text(
-                                authController.userData.toJson()["email"] ??
-                                    "User",
-                                style: Theme.of(context).textTheme.labelMedium,
-                                overflow: TextOverflow.ellipsis,
+                            if (authController.userData.toJson()["email"] !=
+                                    null &&
+                                authController.userData.toJson()["email"] != "")
+                              Column(
+                                children: [
+                                  4.pv,
+                                  Obx(
+                                    () => Text(
+                                      authController.userData
+                                              .toJson()["email"] ??
+                                          "User",
+                                      style:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.labelMedium,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
                           ],
                         ),
               ),

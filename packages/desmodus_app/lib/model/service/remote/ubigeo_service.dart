@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:desmodus_app/config.dart';
+import 'package:desmodus_app/utils/cookies.dart';
 import 'package:desmodus_app/utils/exceptions.dart';
 import 'package:desmodus_app/utils/geocoder.dart';
 import 'package:desmodus_app/model/entity/departamento.dart';
 import 'package:desmodus_app/model/entity/distrito.dart';
 import 'package:desmodus_app/model/entity/provincia.dart';
+import 'package:flutter/material.dart' show debugPrint;
 import 'package:http/http.dart' as http show get;
 
 class UbigeoService {
@@ -32,11 +34,18 @@ class UbigeoService {
 
       final departamento = p;
 
+      final userJWT = await getCookie("access_token");
+
       final res = await http.get(
         Uri.parse("${Config.apiUrl}/departamento/query?name=$departamento"),
+        headers: {
+          'Content-Type': 'application/json',
+          "Cookie": "access_token=$userJWT",
+        },
       );
 
       if (res.statusCode != 200) {
+        print(res.body);
         continue;
       }
 
@@ -48,9 +57,14 @@ class UbigeoService {
 
       return data["id"];
     }
-    throw UbigeoNotFoundException(
-      'No se pudo encontrar un código de ubigeo válido para las coordenadas proporcionadas.',
+    // throw UbigeoNotFoundException(
+    //   'No se pudo encontrar un código de ubigeo válido para las coordenadas proporcionadas.',
+    // );
+    debugPrint(
+      'No se pudo encontrar un código de ubigeo válido para las coordenadas proporcionadas.'
+      "\tUsando código por defecto '000000'.",
     );
+    return '000000';
   }
 
   Future<List<Departamento>> listarDepartamentos() async {

@@ -1,10 +1,15 @@
+import 'package:flutter/material.dart' show debugPrint;
 import 'package:geocoding/geocoding.dart';
 
 Future<List<Placemark>> getPlacemarksFromLatLong(
-    double latitude, double longitude) async {
+  double latitude,
+  double longitude,
+) async {
   try {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(latitude, longitude);
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      latitude,
+      longitude,
+    );
 
     if (placemarks.isEmpty) {
       throw Exception(
@@ -14,7 +19,7 @@ Future<List<Placemark>> getPlacemarksFromLatLong(
 
     return placemarks;
   } catch (error) {
-    print("Error al obtener los placemarks: $error");
+    debugPrint("Error al obtener los placemarks: $error");
     return [];
   }
 }

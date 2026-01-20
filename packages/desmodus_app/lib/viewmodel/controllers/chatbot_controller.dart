@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show debugPrint;
 import 'package:get/get.dart';
 import 'package:desmodus_app/model/entity/local_message.dart';
 import 'package:desmodus_app/model/service/remote/chatbot_service.dart';
@@ -27,7 +28,7 @@ class AssistantController extends GetxController {
       String respuestaBot = "...";
 
       final response = LocalMessage(
-        sender: "FTAP",
+        sender: "DesmodusBot",
         message: respuestaBot,
         createdAt: DateTime.now(),
       );
@@ -38,16 +39,16 @@ class AssistantController extends GetxController {
       final botResponse = await service.preguntarChatbot(consulta);
 
       messages[messageIndex] = LocalMessage(
-        sender: "FTAP",
+        sender: "DesmodusBot",
         message: botResponse,
         createdAt: DateTime.now(),
       );
     } catch (e) {
-      print("Algo salió mal $e");
+      debugPrint("Algo salió mal $e");
       printError();
 
       final errorResponse = LocalMessage(
-        sender: "FTAP",
+        sender: "DesmodusBot",
         message: "Lo siento, ha ocurrido un error al procesar tu solicitud.",
         createdAt: DateTime.now(),
       );

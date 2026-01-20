@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:get/get.dart';
 
-class CuestionarioScreen extends StatelessWidget {
+class CuestionarioScreen extends GetView<CuestionarioController> {
   const CuestionarioScreen({super.key});
 
   AuthController get authController => Get.find<AuthController>();
-  CuestionarioController get controller => Get.find<CuestionarioController>();
   static final _formKey = GlobalKey<FormState>();
 
   Widget buildSectionCard({
@@ -67,9 +66,7 @@ class CuestionarioScreen extends StatelessWidget {
               40.pv,
               // Title + Logo
               Text(
-                isEditingMode
-                    ? "Editar datos del noticiante"
-                    : "Completa tu perfil",
+                isEditingMode ? "Edita tus datos" : "Completa tu perfil",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge,
               ),

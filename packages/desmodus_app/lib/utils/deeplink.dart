@@ -1,4 +1,5 @@
 import 'package:app_links/app_links.dart';
+import 'package:flutter/material.dart' show debugPrint;
 import 'package:get/get.dart';
 import 'package:desmodus_app/model/service/remote/auth_service.dart';
 import 'package:desmodus_app/utils/cookies.dart' show storeCookie;
@@ -16,7 +17,7 @@ class DeepLinkParser {
   void iniciarDeepLinkListener() => _appLinks.uriLinkStream.listen((
     Uri uri,
   ) async {
-    print("Entrada por DeepLink: $uri");
+    debugPrint("Entrada por DeepLink: $uri");
 
     final String jwt = uri.queryParameters['jwt'] ?? '';
 
@@ -38,7 +39,7 @@ class DeepLinkParser {
     }
 
     final user = await AuthService().getUserPayload(jwt);
-    print("Autorización exitosa: $jwt");
+    debugPrint("Autorización exitosa: $jwt");
 
     if (isUserDataComplete(user)) {
       Get.offAndToNamed("/home");
